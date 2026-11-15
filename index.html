@@ -293,8 +293,8 @@ footer a{color:var(--mut);text-decoration:none;border-bottom:1px dotted var(--li
   <div class="hint" id="hint"></div>
 
   <main id="card"><div class="card"><div class="empty" style="padding:64px 10px 70px">
-    <div style="font-size:23px;letter-spacing:10px;color:var(--dim);text-indent:10px">输 入 汉 字</div>
-    <div style="font-size:11.5px;margin-top:16px;letter-spacing:1.5px">看它历代的写法</div>
+    <div style="font-size:15px;letter-spacing:4px;color:var(--dim)">数据载入中…</div>
+    <div style="font-size:11px;margin-top:12px;color:var(--dim);letter-spacing:.5px">首次打开需下载约 4 MB</div>
   </div></div></main>
 
   <footer>
@@ -304,8 +304,14 @@ footer a{color:var(--mut);text-decoration:none;border-bottom:1px dotted var(--li
   </footer>
 </div>
 
-<script src="data.js"></script>
-<script src="glyphs.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/kanshin999/yitizi-dict@main/data.js"></script>
+<script>
+if (!window.__DATA_B64) document.write('<script src="data.js"><\/script>');
+</script>
+<script src="https://cdn.jsdelivr.net/gh/kanshin999/yitizi-dict@main/glyphs.js" defer></script>
+<script>
+if (!window.YTZ_GLYPHS) document.write('<script src="glyphs.js" defer><\/script>');
+</script>
 <script>
 (function(){
   "use strict";
@@ -1010,10 +1016,15 @@ footer a{color:var(--mut);text-decoration:none;border-bottom:1px dotted var(--li
   /* 启动 */
   initGlyphPack();
   setupParts();
-  try {
-    var h = decodeURIComponent(location.hash.slice(1));
-    if (h){ input.value = h; go(h); }
-  } catch(e){}
+  var _h = '';
+  try { _h = decodeURIComponent(location.hash.slice(1)); } catch(e){}
+  if (_h && _h.length === 1 && (CH[_h] || S2T[_h] || T2S[_h])){ input.value = _h; go(_h); }
+  else {
+    card.innerHTML = '<div class="card"><div class="empty" style="padding:64px 10px 70px">'
+      + '<div style="font-size:23px;letter-spacing:10px;color:var(--dim);text-indent:10px">输 入 汉 字</div>'
+      + '<div style="font-size:11.5px;margin-top:16px;letter-spacing:1.5px">看它历代的写法</div>'
+      + '</div></div>';
+  }
   }  /* end boot */
 
   function fatal(msg){
