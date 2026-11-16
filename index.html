@@ -1,1657 +1,1063 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-Hans">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="民国公文速查：文种、公文用语十二类、上行/平行/下行惯用辞令、通用例文与《公文程式》历次规则原文；支持即时检索与公文识读。">
-<meta name="theme-color" content="#f7f2e4">
-<meta property="og:title" content="民国公文速查">
-<meta property="og:description" content="文种 · 公文用语十二类 · 上行/平行/下行惯用辞令 · 例文 · 法规原文，支持检索与公文识读。">
-<meta property="og:type" content="website">
-<title>民国公文速查 · 文种 / 用语 / 惯用辞令</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>字的分身 · 异体字谱</title>
+<meta name="description" content="输入一个汉字，看它历代的异体写法。数据源自《異體字字典》異體字表、《说文解字》重文与 Unicode Unihan。">
 <style>
-  :root{
-    --ink:#241f19; --ink2:#5c554a; --ink3:#948b7b;
-    --bg:#f7f2e4; --card:#fffdf7; --line:#e0d5bd;
-    --accent:#2b4a66; --accent-l:#3d6080;
-    --seal:#9a3b32;
-    --up:#35597d; --par:#8a6a3f; --down:#9c4a3a; --allc:#6f675a;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:"PingFang SC","Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;
-       background:var(--bg);color:var(--ink);line-height:1.72;-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:900px;margin:0 auto;padding:0 20px 90px;}
+@font-face{font-family:"SealFallback";src:local("Kaiti SC"),local("KaiTi"),local("STKaiti")}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#faf7f0;--card:#fffdf8;--ink:#241f1a;--red:#a8322a;--line:#e7ddcc;
+  --box:#f6f1e7;--mut:#97876f;--dim:#c9bda8;--noise:.05;--shadow:rgba(90,70,40,.08);
+  --serif:"Songti SC","Noto Serif CJK SC","Source Han Serif SC","Noto Serif CJK","SimSun",serif;
+  --sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);transition:background .45s,color .45s;
+  font-family:var(--serif);line-height:1.85;padding:58px 20px 80px;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:var(--noise);z-index:0;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.wrap{max-width:740px;margin:0 auto;position:relative;z-index:1}
 
-  header{padding:42px 0 4px;text-align:center;}
-  .brand{font-size:12.5px;letter-spacing:5px;color:var(--accent-l);margin-bottom:12px;}
-  h1{font-size:clamp(24px,4.4vw,33px);letter-spacing:4px;font-weight:700;}
-  .sub{margin-top:9px;color:var(--ink2);font-size:13.5px;letter-spacing:1.5px;}
-  .searchwrap{margin:24px auto 0;max-width:560px;position:relative;}
-  .searchwrap svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);opacity:.32;}
-  #q{width:100%;padding:13px 16px 13px 45px;border:1px solid var(--line);border-radius:11px;
-     background:var(--card);font-size:15.5px;font-family:inherit;color:var(--ink);outline:none;transition:.15s;}
-  #q:focus{border-color:var(--accent-l);box-shadow:0 0 0 3px rgba(61,96,128,.10);}
+/* 页头 */
+header{text-align:center;padding-bottom:26px;border-bottom:1px solid var(--line);margin-bottom:6px}
+h1{font-size:31px;font-weight:500;letter-spacing:11px;text-indent:11px}
+header .sub{margin-top:12px;font-size:12.5px;color:var(--mut);letter-spacing:2.6px}
+header .stat{margin-top:8px;font-size:11px;color:var(--dim);letter-spacing:.5px}
 
-  /* 首页 */
-  .home{margin-top:32px;}
-  .home-hint{text-align:center;color:var(--ink3);font-size:12.5px;margin-bottom:14px;letter-spacing:1px;}
-  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;}
-  @media(max-width:720px){.cards{grid-template-columns:repeat(2,1fr);}}
-  @media(max-width:460px){.cards{grid-template-columns:1fr;}}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:20px 18px;
-        cursor:pointer;transition:.16s;text-align:left;display:flex;flex-direction:column;gap:6px;min-height:112px;}
-  .card:hover{border-color:var(--accent-l);box-shadow:0 8px 22px rgba(43,74,102,.08);transform:translateY(-2px);}
-  .card .no{font-size:11.5px;letter-spacing:2px;color:var(--accent-l);font-weight:700;}
-  .card .t{font-size:17px;font-weight:700;letter-spacing:1px;}
-  .card .d{font-size:12.5px;color:var(--ink2);line-height:1.55;}
-  .card .n{font-size:11.5px;color:var(--ink3);margin-top:auto;}
+/* 搜索 */
+.search{display:flex;justify-content:center;margin:30px 0 16px}
+#q{font-family:inherit;font-size:26px;text-align:center;letter-spacing:7px;width:230px;
+  padding:8px 4px 10px;border:none;border-bottom:1.5px solid var(--line);background:transparent;
+  color:var(--ink);outline:none;transition:border-color .3s,width .3s}
+#q:focus{border-color:var(--red)}
+#q::placeholder{color:var(--dim);letter-spacing:4px;font-size:19px}
 
-  /* 详情 */
-  .detail{display:none;margin-top:26px;}
-  .detail.show{display:block;}
-  .back{display:inline-flex;gap:6px;font-size:13px;color:var(--accent-l);cursor:pointer;
-        border:none;background:none;font-family:inherit;padding:4px 0;margin-bottom:4px;}
-  .back:hover{color:var(--accent);}
-  .sec-h{font-size:22px;letter-spacing:2px;margin:2px 0 4px;font-weight:700;color:var(--ink);}
-  .sec-d{color:var(--ink2);font-size:13.5px;margin-bottom:14px;}
-  .sub{font-size:13px;font-weight:700;color:var(--accent-l);letter-spacing:1px;
-       margin:26px 0 4px;padding-bottom:5px;border-bottom:1px solid var(--line);}
-  .sub small{font-weight:400;color:var(--ink3);letter-spacing:0;margin-left:6px;}
+/* 快捷字 */
+.quick{display:flex;flex-wrap:wrap;gap:1px;justify-content:center;margin:8px 0 0}
+.quick button{font-family:var(--serif);font-size:15.5px;padding:2px 8px;border:none;background:transparent;
+  color:var(--mut);cursor:pointer;transition:color .2s,transform .2s}
+.quick button:hover{color:var(--red);transform:translateY(-2px)}
 
-  /* 条目（保留全部解释） */
-  .item{padding:13px 2px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:210px 1fr;gap:16px;}
-  @media(max-width:640px){.item{grid-template-columns:1fr;gap:5px;}}
-  .it-h{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
-  .it-t{font-size:16.5px;font-weight:700;letter-spacing:.5px;}
-  .it-p{order:3;flex-basis:100%;margin-top:2px;font-size:11.5px;color:var(--ink3);overflow-wrap:anywhere;min-width:0;}
-  .tag{font-size:10.5px;padding:1px 7px;border-radius:20px;line-height:1.6;}
-  .tag.up{background:#e6edf4;color:var(--up);}
-  .tag.par{background:#f3ecdb;color:var(--par);}
-  .tag.down{background:#f6e6e0;color:var(--down);}
-  .tag.allc{background:#efe9dc;color:var(--allc);}
-  .it-d{font-size:14px;color:var(--ink);}
-  .meta{font-size:12.8px;color:var(--ink2);margin-top:4px;line-height:1.65;}
-  .meta .k{color:var(--ink3);margin-right:5px;}
-  .meta .eg{font-family:"Noto Serif SC","Songti SC",serif;color:#7c4a2c;}
-  .meta .nu{color:#6b5a3e;}
+/* 工具条 */
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin-bottom:10px}
+.tsep{height:1px;background:var(--line);max-width:440px;margin:16px auto}
+.tb-view{margin-bottom:20px}
+.toolbar button{font-family:inherit;font-size:12.5px;padding:5px 13px;border:1px solid var(--line);
+  border-radius:2px;background:transparent;color:var(--mut);cursor:pointer;letter-spacing:1px;transition:.25s}
+.toolbar button:hover{border-color:var(--red);color:var(--red)}
+.themes{display:inline-flex;gap:1px;border:1px solid var(--line);border-radius:2px;overflow:hidden}
+.themes button{border:none;border-radius:0;padding:5px 12px;font-size:12px}
+.themes button.on{background:var(--red);color:#fff;border-color:var(--red)}
+.themes button.on:hover{background:var(--red);color:#fff}
+.parts{max-width:760px;margin:0 auto 22px;background:var(--card);border:1px solid var(--line);
+  border-radius:3px;padding:18px;box-shadow:0 10px 26px var(--shadow)}
+.parts[hidden]{display:none}
+.picked{display:flex;flex-wrap:wrap;gap:7px;align-items:center;min-height:38px;padding:6px 10px;
+  background:var(--box);border:1px solid var(--line);border-radius:2px}
+.pempty{font-size:11.5px;color:var(--dim);letter-spacing:1px}
+.pk-chip{display:inline-flex;align-items:center;gap:4px;font-size:20px;line-height:1;
+  padding:4px 8px;background:var(--card);border:1px solid var(--red);border-radius:2px;color:var(--red);cursor:pointer}
+.pk-chip i{font-style:normal;font-size:11px;opacity:.6}
+.prow{display:flex;gap:8px;justify-content:center;margin-top:12px}
+#pin{flex:0 1 220px;font-family:inherit;font-size:16px;letter-spacing:2px;text-align:center;
+  padding:6px 10px;border:1px solid var(--line);border-radius:2px;background:transparent;color:var(--ink);outline:none}
+#pin:focus{border-color:var(--red)}
+#pin::placeholder{font-size:11.5px;letter-spacing:.5px;color:var(--dim)}
+#pclear{font-family:inherit;font-size:12px;padding:6px 14px;border:1px solid var(--line);background:transparent;
+  color:var(--mut);border-radius:2px;cursor:pointer}
+#pclear:hover{border-color:var(--red);color:var(--red)}
+.decomp{margin-top:12px;padding:9px 12px;background:var(--box);border:1px solid var(--line);
+ border-radius:2px;font-size:12.5px;color:var(--mut);letter-spacing:.5px;line-height:1.9}
+.decomp[hidden]{display:none}
+.decomp .dz{font-size:17px;color:var(--ink);margin:0 3px}
+.decomp .dop{color:var(--red);font-size:15px;margin:0 2px}
+.decomp .dc{display:inline-block;font-size:18px;padding:2px 9px;margin:2px 4px 2px 0;
+ background:var(--card);border:1px solid var(--line);border-radius:2px;cursor:pointer;color:var(--ink)}
+.decomp .dc:hover{border-color:var(--red);color:var(--red)}
+.decomp .dlb{font-size:10.5px;color:var(--dim);letter-spacing:1.5px;margin-right:8px}
+.psec{display:flex;align-items:center;justify-content:space-between;
+  font-size:10.5px;color:var(--dim);letter-spacing:2px;margin:16px 0 7px}
+#padToggle{font-family:inherit;font-size:10.5px;letter-spacing:.5px;padding:3px 9px;
+  border:1px solid var(--line);background:transparent;color:var(--mut);border-radius:2px;cursor:pointer}
+#padToggle:hover{border-color:var(--red);color:var(--red)}
+.pad{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:4px}
+.pb{font-family:inherit;font-size:17px;line-height:1;padding:7px 0;border:1px solid var(--line);
+  border-radius:2px;background:var(--box);color:var(--ink);cursor:pointer;transition:.15s}
+.pb:hover{border-color:var(--red);color:var(--red)}
+.pb.on{background:var(--red);border-color:var(--red);color:#fff}
+.recog{max-width:760px;margin:0 auto 22px;background:var(--card);border:1px solid var(--line);
+  border-radius:3px;padding:18px;box-shadow:0 10px 26px var(--shadow)}
+.recog[hidden]{display:none}
+.drop{border:1px dashed var(--line);border-radius:2px;padding:30px 16px;text-align:center;cursor:pointer;
+  transition:.2s;background:var(--box)}
+.drop:hover,.drop.over{border-color:var(--red);background:var(--card)}
+.dtxt{font-size:14px;color:var(--ink);letter-spacing:1px}
+.dsub{margin-top:8px;font-size:11px;color:var(--dim);letter-spacing:.5px}
+.origwrap{text-align:center;margin:14px 0 0}
+.origwrap canvas{max-width:100%;border:1px solid var(--line);border-radius:2px;background:#fff;
+ image-rendering:auto;box-shadow:0 4px 12px rgba(90,70,40,.08)}
+.raction{display:flex;gap:12px;align-items:center;justify-content:center;margin:14px 0 0}
+.raction button{font-family:inherit;font-size:13px;padding:7px 22px;border:1px solid var(--red);
+ background:var(--red);color:#fff;border-radius:2px;cursor:pointer;letter-spacing:2px;transition:.2s}
+.raction button:hover{opacity:.88}
+.raction button:disabled{background:var(--dim);border-color:var(--dim);cursor:default;opacity:.7}
+.fname{font-size:11px;color:var(--dim);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pvwrap{display:flex;gap:14px;justify-content:center;align-items:flex-end;margin:14px 0 0}
+.pvwrap canvas{border:1px solid var(--line);border-radius:2px;background:#fff}
+#binview{width:80px;height:88px;image-rendering:pixelated}
+.rstat{text-align:center;font-size:11.5px;color:var(--mut);margin-top:12px;min-height:16px;letter-spacing:.5px}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;margin-top:12px}
+.rg{background:var(--box);border:1px solid var(--line);border-radius:2px;padding:6px 3px 4px;
+  display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:.2s}
+.rg:hover{border-color:var(--red);transform:translateY(-2px)}
+.rg img{width:36px;height:36px;display:block}
+.rg .rc{font-size:15px;line-height:1.3;color:var(--ink)}
+.rg .rs{font-size:9px;color:var(--dim);font-family:var(--sans)}
+.rg .rp{font-size:9px;color:var(--red);font-family:var(--sans)}
+.pgroup{grid-column:1/-1;font-size:10.5px;color:var(--dim);letter-spacing:2px;margin:6px 0 -2px;
+ border-bottom:1px solid var(--line);padding-bottom:4px}
+.pgroup.part-h{color:#b8860b;margin-top:12px}
+.rg.loose{opacity:.62}
+.rg.loose:hover{opacity:1}
+.rg .pk{font-size:9px;color:var(--mut);font-family:var(--sans);letter-spacing:0}
+.rg .pk.part{color:#b8860b}
+.hint{text-align:center;font-size:11.5px;color:var(--dim);letter-spacing:.7px;margin:-14px 0 22px;min-height:18px}
 
-  /* 文种表 / 方法 */
-  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);
-        border-radius:11px;overflow:hidden;font-size:13.5px;margin-top:6px;}
-  th{background:#f2ebd9;color:var(--ink2);font-weight:600;text-align:left;padding:10px 13px;font-size:12px;letter-spacing:1px;}
-  td{padding:10px 13px;border-top:1px solid var(--line);vertical-align:top;}
-  td.t{font-weight:700;white-space:nowrap;}
-  td.use{white-space:normal;line-height:1.65;}
-  .tb-wenlei th:first-child,.tb-wenlei td:first-child{width:28%;text-align:center;}
-  .tb-wenlei td.t{white-space:normal;vertical-align:middle;text-align:center;line-height:1.45;}
-  .tb-wenlei td.t .tag{display:block;width:max-content;margin:6px auto 0;}
-  .tb-wenlei td.use{vertical-align:middle;}
-  .meth h3{font-size:15px;color:var(--accent);margin:20px 0 6px;letter-spacing:1px;}
-  .meth p{font-size:14px;color:var(--ink2);margin:5px 0;}
-  .meth b{color:var(--ink);}
-  .chain{font-size:14px;background:#f2ebd9;border-left:3px solid var(--accent-l);padding:10px 14px;margin:8px 0;border-radius:0 6px 6px 0;}
-  .steps{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;margin-top:8px;}
-  .step{border:1px solid var(--line);border-radius:11px;background:var(--card);margin:0;overflow:hidden;}
-  .step summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:13px 16px;background:#f2ebd9;}
-  .step summary::-webkit-details-marker{display:none;}
-  .step summary .no{font-size:11px;letter-spacing:2px;color:var(--accent-l);font-weight:700;flex:none;}
-  .step summary .st{font-size:15.5px;font-weight:700;letter-spacing:1px;}
-  .step summary .arw{margin-left:auto;color:var(--ink3);transition:.2s;font-size:16px;}
-  .step[open] summary .arw{transform:rotate(90deg);}
-  .step ul{list-style:none;padding:4px 16px 12px;}
-  .step li{font-size:13.8px;color:var(--ink2);padding:7px 0;border-top:1px dashed var(--line);line-height:1.65;}
-  .step li:first-child{border-top:none;}
-  .step li b{color:var(--ink);}
-  .step li .sl{display:block;padding-left:16px;padding-top:3px;font-weight:400;color:var(--ink2);}
-  /* 清空按钮 */
-  .searchwrap .clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);border:none;
-    background:#e9e2d2;color:#6f675a;border-radius:50%;width:26px;height:26px;cursor:pointer;
-    font-size:14px;line-height:1;display:none;}
-  .searchwrap .clear.show{display:block;}
-  .searchwrap .clear:hover{background:#ded5c3;}
-  /* 例文 / 法规 */
-  .hint{font-size:13px;color:var(--ink2);margin:2px 0 14px;line-height:1.7;}
-  .exbody{font-size:14.5px;line-height:2;color:#2b2620;background:var(--card);border:1px solid var(--line);
-          border-radius:10px;padding:14px 18px;margin:10px 0;}
-  .tk{border-bottom:1px dashed #b9a06a;color:#7c4a2c;cursor:pointer;}
-  .tk:active,.tk.hit{background:#f7e8c8;border-radius:3px;}
-  .tip{position:fixed;z-index:9999;max-width:250px;background:#2b2724;color:#fffdf7;
-       font-size:12.5px;line-height:1.55;padding:7px 11px;border-radius:9px;
-       box-shadow:0 8px 24px rgba(0,0,0,.2);display:none;pointer-events:none;}
-  .tip.show{display:block;}
-  /* 公文识读 */
-  .sd textarea{width:100%;min-height:170px;padding:12px 14px;border:1px solid var(--line);
-    border-radius:11px;background:var(--card);font-family:"Noto Serif SC","Songti SC",serif;
-    font-size:14.5px;line-height:1.9;color:var(--ink);outline:none;resize:vertical;}
-  .sd textarea:focus{border-color:var(--accent-l);box-shadow:0 0 0 3px rgba(61,96,128,.10);}
-  .sd-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 14px;}
-  .btn{border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:13px;
-    padding:8px 14px;border-radius:9px;cursor:pointer;font-family:inherit;}
-  .btn:hover{border-color:var(--accent-l);color:var(--accent);}
-  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
-  .btn.primary:hover{background:var(--accent-l);color:#fff;}
-  .sd-opt{font-size:12.5px;color:var(--ink2);display:inline-flex;align-items:center;gap:5px;cursor:pointer;}
-  .sd-exp{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:9px;background:var(--card);overflow:hidden;}
-  .sd-sel{border:0;background:transparent;font-family:inherit;font-size:13px;color:var(--ink2);
-    padding:8px 26px 8px 12px;cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;
-    background-image:linear-gradient(45deg,transparent 50%,#8d8577 50%),linear-gradient(135deg,#8d8577 50%,transparent 50%);
-    background-position:calc(100% - 15px) 55%,calc(100% - 10px) 55%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;}
-  .sd-exp .btn{border:0;border-left:1px solid var(--line);border-radius:0;padding:8px 15px;}
-  .sd-pick{position:relative;display:inline-block;}
-  .sd-pick-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;font-size:13px;}
-  .sd-pick-btn .car{width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;
-    border-top:5px solid #8d8577;margin-top:1px;}
-  .sd-pick.on .sd-pick-btn{border-color:var(--accent-l);color:var(--accent);}
-  .pd-menu{display:none;position:fixed;z-index:80;
-    width:320px;max-width:calc(100vw - 16px);max-height:min(33vh,300px);overflow-y:auto;
-    background:#fff;border:1px solid var(--line);border-radius:10px;padding:5px;
-    box-shadow:0 12px 32px rgba(0,0,0,.14);-webkit-overflow-scrolling:touch;}
-  .sd-pick.on .pd-menu{display:block;}
-  .pd-menu .grp{font-size:11px;color:var(--ink3);letter-spacing:.5px;padding:7px 9px 4px;}
-  .pd-menu .it{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
-    width:100%;text-align:left;border:0;background:transparent;font:inherit;
-    font-size:12.5px;color:var(--ink2);padding:6px 9px;border-radius:7px;cursor:pointer;
-    white-space:normal;overflow:hidden;line-height:1.45;min-height:2.9em;}
-  .pd-menu .it:hover{background:#f3eee0;color:var(--accent);}
-  .pd-menu .it-split{display:flex;align-items:flex-start;gap:2px;}
-  .pd-menu .it-split .pfx{flex:0 0 auto;white-space:nowrap;}
-  .pd-menu .it-split .rest{flex:1 1 auto;min-width:0;display:-webkit-box;
-    -webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;}
-  .sd-exp .btn:hover{background:#f3eee0;}
-  /* 导出预览弹层 */
-  .mo{position:fixed;inset:0;background:rgba(32,28,22,.55);display:none;z-index:999;padding:24px;box-sizing:border-box;}
-  .mo.on{display:flex;align-items:center;justify-content:center;}
-  .mo-box{background:#fbf7ec;border-radius:14px;max-width:940px;width:100%;max-height:92vh;
-    display:flex;flex-direction:column;overflow:hidden;box-shadow:0 18px 60px rgba(0,0,0,.3);}
-  .mo-hd{display:flex;align-items:center;gap:10px;padding:13px 18px;border-bottom:1px solid var(--line);
-    font-size:13.5px;color:var(--ink);}
-  .mo-hd b{font-weight:600;}
-  .mo-x{margin-left:auto;border:0;background:transparent;font-size:20px;line-height:1;color:var(--ink3);
-    cursor:pointer;padding:0 4px;}
-  .mo-bd{flex:1;overflow:auto;padding:18px;background:#efe8d8;text-align:center;-webkit-overflow-scrolling:touch;}
-  .mo-bd img{display:block;margin:0 auto 14px;max-width:100%;background:#fff;
-    box-shadow:0 2px 10px rgba(0,0,0,.12);border-radius:2px;}
-  .mo-bd iframe{border:0;background:#fff;transform-origin:top left;display:block;}
-  .mo-ft{display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid var(--line);background:#fbf7ec;}
-  .mo-tip{font-size:12px;color:var(--ink3);margin-right:auto;line-height:1.6;}
-  .mo-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:rgba(36,31,25,.92);
-    color:#fff;font-size:12.5px;padding:8px 16px;border-radius:20px;z-index:1000;opacity:0;
-    transition:opacity .2s;pointer-events:none;}
-  .mo-toast.on{opacity:1;}
-  .sd-out{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 14px;
-    font-family:"Noto Serif SC","Songti SC",serif;font-size:14.5px;line-height:1.9;
-    white-space:pre-wrap;word-break:break-word;}
-  .sd-compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:2px 0 8px;}
-  .sd-pane{display:flex;flex-direction:column;min-width:0;height:clamp(320px,56vh,560px);}
-  .sd-lab{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:nowrap;
-    height:30px;flex:0 0 auto;margin-bottom:6px;font-size:12px;color:var(--ink3);letter-spacing:.6px;}
-  .sd-lab>span:first-child{white-space:nowrap;}
-  .sd-pane>textarea,.sd-pane>.sd-out{flex:1 1 auto;min-height:0;}
-  .sd-compare textarea{height:100%;resize:none;overflow:auto;scrollbar-gutter:stable;}
-  .sd-compare .sd-out{height:100%;overflow:auto;scrollbar-gutter:stable;}
-  .sd-foot{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;
-    margin-top:8px;border-top:1px dashed var(--line);padding-top:10px;}
-  .sd-foot .sd-rep{margin:0;border:0;padding:0;flex:1 1 100%;min-height:18px;}
-  .sr-line{display:flex;flex-wrap:wrap;gap:14px;font-size:11.5px;color:var(--ink3);align-items:baseline;}
-  .sr-line b{color:var(--accent);}
-  .sr-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
-  .sr-chip{font-size:11px;color:var(--ink2);border:1px solid var(--line);border-radius:12px;
-    padding:1px 8px;background:#fff;line-height:1.6;}
-  .sr-chip i{display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:5px;vertical-align:1px;}
-  .sr-chip b{color:var(--ink3);font-weight:400;margin-left:3px;}
-  .pd-bar{display:flex;align-items:center;gap:7px;flex-wrap:nowrap;font-size:11.5px;color:var(--ink3);
-    margin:0;justify-content:flex-end;flex:0 1 auto;min-width:0;}
-  .pd-sum{white-space:nowrap;margin-right:2px;}
-  .pd-mini{font-size:11px;padding:2px 9px;white-space:nowrap;border:1px solid var(--line);background:#fff;
-    border-radius:12px;cursor:pointer;color:var(--ink2);font-family:inherit;}
-  .pd-mini.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
-  .pd-mini:disabled{opacity:.42;cursor:default;}
-  .pd-mini:disabled:hover{border-color:var(--line);color:var(--ink2);}
-  .pd-chips{display:flex;flex-wrap:wrap;gap:6px;}
-  .pd-chip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ink2);
-    border:1px solid var(--line);border-radius:14px;padding:2px 9px;background:#fff;cursor:pointer;}
-  .pd-chip.on{border-color:var(--accent);background:#eef2f5;color:var(--accent);}
-  .pd-chip input{accent-color:var(--accent);margin:0;}
-  .pd-list{display:flex;flex-direction:column;gap:5px;}
-  .pd-item{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ink2);cursor:pointer;}
-  .pd-item.on{color:var(--accent);}
-  .pd-item input{accent-color:var(--accent);margin:0;flex:none;}
-  .pd-inline{display:inline-flex;align-items:center;gap:2px;vertical-align:baseline;margin:0 1px;}
-  .pd-inline input{width:12px;height:12px;margin:0;accent-color:var(--accent);vertical-align:middle;}
-  .pd-inline.on span{color:var(--accent);font-weight:700;}
-  .pd-inline.pd-add span{color:var(--ink3);}
-  .pd-chg{font-family:"Noto Serif SC","Songti SC",serif;}
-  .pd-empty{font-size:11.5px;color:var(--ink3);}
-  .pd-long{font-size:11px;color:var(--ink3);margin-top:6px;}
-  @media(max-width:640px){
-    .sd-compare{grid-template-columns:1fr;gap:14px;margin-bottom:10px;}
-    .sd-pane{height:290px;}
-    .sd-lab{height:auto;flex-wrap:wrap;justify-content:flex-start;gap:8px;margin-bottom:8px;}
-    .pd-bar{justify-content:flex-start;flex-wrap:wrap;gap:6px;flex:1 1 auto;}
-    .pd-mini{font-size:12px;padding:5px 11px;border-radius:15px;}
-    .pd-sum{width:100%;margin:0 0 2px;}
-    .sd-foot{flex-direction:column;align-items:stretch;gap:10px;}
-    .sd-foot .sd-rep{flex:1 1 auto;}
-    .sr-line{font-size:12px;gap:10px;}
-    .sd-out{padding:12px 13px;font-size:15px;}
-    .sd textarea{font-size:15px;padding:12px 13px;}
-    .sd-bar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0 12px;}
-    .sd-bar>.btn,.sd-bar>.sd-exp,.sd-bar>.sd-pick{width:100%;box-sizing:border-box;}
-    .sd-bar .sd-pick-btn{width:100%;justify-content:center;}
-    .sd-bar .sd-exp .sd-sel{flex:1 1 auto;min-width:0;width:auto;}
-    .sd-bar .sd-opt{grid-column:1 / -1;}
-    .sd-bar .btn{white-space:nowrap;}
-    .mo{padding:10px;}
-    .mo-bd{padding:12px;}
-    .mo-ft{flex-wrap:wrap;gap:8px;}
-    .mo-tip{width:100%;margin:0;}
-    .btn{padding:8px 12px;font-size:12.5px;}
-  }
-  .sd-out:empty::before{content:"识读结果将显示在这里";color:#b3aa99;font-size:13px;font-family:"PingFang SC",sans-serif;}
-  .report{margin-top:6px;}
-  .report .rline{font-size:13px;color:var(--ink2);margin:6px 0;}
-  .report .rline b{color:var(--accent);}
-  .report .rbox{background:#f2ebd9;border:1px solid var(--line);border-radius:10px;
-    padding:12px 14px;margin-top:6px;font-size:13.2px;color:var(--ink2);line-height:1.9;}
-  .report .pill{display:inline-block;background:#fff;border:1px solid var(--line);
-    border-radius:20px;padding:2px 10px;margin:3px 4px 0 0;font-size:12px;}
-  /* 校对句读 */
-  .pmark{color:inherit;}
-  .pmark.pdiff{background:#f7e8c8;color:#9c4a3a;border-bottom:2px solid #9c4a3a;
-    border-radius:2px;padding:0 1px;font-weight:700;}
-  .pmark.pdel{color:#9c4a3a;text-decoration:line-through;opacity:.65;}
-  .pd-row{font-size:12.8px;color:var(--ink2);padding:6px 0;border-top:1px dashed var(--line);line-height:1.75;
-    display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;}
-  .pd-row:first-child{border-top:none;}
-  .pd-idx{display:inline-block;min-width:66px;color:var(--accent-l);font-size:11.5px;flex:none;}
-  .pd-ctx{flex:1;min-width:120px;}
-  .pd-btns{display:flex;gap:6px;flex:none;}
-  .pd-btn{font-size:11px;padding:2px 9px;border:1px solid var(--line);background:#fff;
-    border-radius:14px;cursor:pointer;color:var(--ink2);font-family:inherit;}
-  .pd-btn:hover{border-color:var(--accent-l);color:var(--accent);}
-  .pd-btn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
-  .pd-actions{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px;}
-  .pd-more{font-size:12px;color:var(--ink3);padding-top:6px;}
-  .pmark.pdiff-keep{background:#efe9dc;color:#6f675a;border-bottom:1px dotted #b9a06a;}
-  /* 导出（图片 / PDF） */
-  #printArea{display:none;}
-  @media print{
-    @page{margin:16mm 14mm;}
-    body.printing{background:#fff;}
-    body.printing > *:not(#printArea){display:none !important;}
-    body.printing #printArea{display:block !important;}
-    #printArea{font-family:"Noto Serif SC","Songti SC",serif;color:#241f19;font-size:13.5px;line-height:1.9;}
-    #printArea .pdf-h{font-size:20px;font-weight:700;margin-bottom:6px;}
-    #printArea .pdf-m{font-size:11.5px;color:#5c554a;line-height:1.8;margin-bottom:10px;
-      border-bottom:1px solid #ddd;padding-bottom:8px;}
-    #printArea .pdf-b{white-space:pre-wrap;word-break:break-word;}
-    #printArea .tk{background:#f7e8c8;color:#7c4a2c;border-bottom:1px dashed #b9a06a;
-      -webkit-print-color-adjust:exact;print-color-adjust:exact;}
-    #printArea .pdf-f{margin-top:12px;border-top:1px solid #ddd;padding-top:8px;
-      font-size:10.5px;color:#948b7b;}
-  }
-  /* 首页主工具入口 */
-  .tool-cta{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,#2b4a66,#3d6080);
-    color:#fff;border-radius:14px;padding:18px 22px;margin:0 0 22px;cursor:pointer;
-    box-shadow:0 8px 22px rgba(43,74,102,.16);transition:.18s;text-align:left;}
-  .tool-cta:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(43,74,102,.24);}
-  .tool-cta .tc-main{flex:1;min-width:0;}
-  .tool-cta .tc-t{font-size:18px;font-weight:700;letter-spacing:1px;}
-  .tool-cta .tc-d{font-size:12.8px;opacity:.88;margin-top:4px;line-height:1.6;}
-  .tool-cta .tc-btn{flex:none;font-size:13.5px;background:rgba(255,255,255,.16);
-    border:1px solid rgba(255,255,255,.38);padding:8px 14px;border-radius:20px;white-space:nowrap;}
-  .tool-cta:hover .tc-btn{background:rgba(255,255,255,.28);}
-  .divider{height:1px;background:var(--line);margin:12px 0;}
-  details{border:1px solid var(--line);border-radius:10px;background:var(--card);margin:10px 0;overflow:hidden;}
-  details>summary{cursor:pointer;padding:12px 15px;font-size:14.5px;font-weight:600;background:#f2ebd9;list-style:none;}
-  details>summary::-webkit-details-marker{display:none;}
-  details .exbody{border:none;border-radius:0;margin:0;background:transparent;padding:6px 15px 14px;}
-  .art{font-family:"Noto Serif SC","Songti SC",serif;font-size:13.8px;line-height:1.95;color:#333;white-space:pre-wrap;}
-  .ver-note{font-size:12.8px;color:var(--ink2);line-height:1.8;margin:8px 0;}
-  .ver-note .hl{color:#9a3b32;font-weight:700;}
-  .minih{font-size:11.5px;color:var(--ink3);letter-spacing:1px;margin:15px 0 2px;}
-  .dirh{margin-top:32px;font-size:15.5px;}
-  .dirh.up{color:var(--up);border-color:var(--up);}
-  .dirh.par{color:var(--par);border-color:var(--par);}
-  .dirh.down{color:var(--down);border-color:var(--down);}
-  .dirh.allc{color:var(--allc);border-color:var(--allc);}
-  /* 小类导航 */
-  .subtabs{display:none;flex-wrap:wrap;gap:8px;margin:4px 0 16px;}
-  .chip{border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:13px;
-        padding:7px 12px;border-radius:20px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;}
-  .chip:hover{border-color:var(--accent-l);color:var(--accent);}
-  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff;}
-  .chip b{font-size:11px;font-weight:600;opacity:.7;background:rgba(0,0,0,.06);border-radius:9px;padding:0 6px;}
-  .chip.on b{background:rgba(255,255,255,.22);opacity:.95;}
-  .grp{border:1px solid var(--line);border-radius:11px;background:var(--card);margin:10px 0;overflow:hidden;}
-  .grp>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px 16px;background:#f2ebd9;font-weight:700;font-size:14px;}
-  .grp>summary::-webkit-details-marker{display:none;}
-  .grp .cnt{margin-left:auto;font-size:11.5px;color:var(--ink3);font-weight:400;}
-  .grp .arw{color:var(--ink3);transition:.2s;font-size:15px;}
-  .grp[open] .arw{transform:rotate(90deg);}
-  .grp .item{padding:12px 16px;}
+/* 卡片 */
+.card{background:var(--card);border:1px solid var(--line);border-radius:3px;
+  box-shadow:0 12px 34px var(--shadow);padding:30px 30px 26px;transition:background .45s,border-color .45s}
 
-  /* 结果 */
-  #results{display:none;margin-top:26px;}
-  #results.show{display:block;}
-  .res-h{font-size:14px;color:var(--ink2);margin-bottom:10px;}
-  .res-h b{color:var(--accent);}
-  .empty{display:none;text-align:center;color:var(--ink3);padding:46px 0;font-size:13.5px;}
-  .empty.show{display:block;}
-  .src-tag{font-size:11px;color:var(--ink3);border:1px solid var(--line);border-radius:20px;padding:0 8px;}
+/* 正字头 */
+.head{display:flex;align-items:flex-start;gap:24px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.zi{font-size:106px;line-height:.92;font-weight:400;letter-spacing:0;min-width:118px;text-align:center;
+  color:var(--ink);font-feature-settings:"palt"}
+.head .meta{flex:1;padding-top:6px;min-width:0}
+.row{display:flex;gap:12px;font-size:13.5px;padding:3px 0;color:var(--ink)}
+.row label{color:var(--dim);font-size:12px;letter-spacing:1.6px;min-width:42px;flex-shrink:0;padding-top:1px}
+.row span{color:var(--mut)}
+.row b{font-weight:400;color:var(--ink)}
+.badge{display:inline-block;margin-top:12px;font-size:11.5px;color:var(--red);letter-spacing:2px;
+  border:1px solid var(--red);border-radius:2px;padding:1px 9px;opacity:.9}
 
-  footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);
-         text-align:center;color:var(--ink3);font-size:11.5px;letter-spacing:1px;line-height:2;}
-  .ft-line{font-size:12.5px;color:#857d6d;letter-spacing:1.5px;margin-bottom:8px;}
-  .ft-meta{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 10px;margin-bottom:10px;}
-  .ft-meta span{font-size:11.5px;color:var(--ink3);background:var(--card);
-    border:1px solid var(--line);border-radius:20px;padding:2px 10px;letter-spacing:0;line-height:1.6;}
-  .ft-note{font-size:11px;color:var(--ink3);line-height:1.95;letter-spacing:0;}
-  .ft-ref-t{font-size:11px;color:#857d6d;margin-bottom:4px;letter-spacing:1px;}
-  .ft-refs{list-style:none;padding:0;margin:0 0 8px;display:flex;flex-wrap:wrap;
-    justify-content:center;gap:2px 12px;}
-  .ft-refs li{font-size:11px;color:var(--ink3);}
-  .ft-disc{font-size:10.8px;color:var(--ink3);margin-top:2px;}
-  /* ===== 移动端适配（375 / 414 / 768）===== */
-  @media (max-width:560px){
-    body{-webkit-text-size-adjust:100%;}
-    .wrap{padding:0 26px 72px;}
-    header{padding-top:30px;}
-    h1{letter-spacing:2px;}
-    .sub{letter-spacing:.5px;font-size:12.5px;}
-    .searchwrap{margin-top:20px;}
-    #q{font-size:14.5px;padding:12px 42px 12px 40px;}
-    .searchwrap svg{left:13px;width:15px;height:15px;}
-    .searchwrap .clear{right:6px;width:24px;height:24px;}
-    .cards{gap:10px;}
-    .card{padding:16px 14px;min-height:auto;gap:5px;border-radius:12px;}
-    .card .t{font-size:15.5px;}
-    .card .d{font-size:12px;}
-    .tool-cta{flex-direction:column;align-items:stretch;gap:10px;padding:16px 18px;}
-    .tool-cta .tc-btn{align-self:stretch;text-align:center;}
-    .home-hint{font-size:11.5px;}
-    .sec-h{font-size:19px;letter-spacing:1px;}
-    .sec-d{font-size:12.8px;}
-    .subtabs{gap:6px;margin:2px 0 12px;}
-    .chip{font-size:12px;padding:6px 10px;gap:5px;}
-    .chip b{font-size:10.5px;padding:0 5px;}
-    .item{grid-template-columns:1fr;gap:4px;padding:12px 0;}
-    .it-h{gap:5px;align-items:center;}
-    .it-t{font-size:15.5px;overflow-wrap:anywhere;}
-    .it-p{font-size:11px;overflow-wrap:anywhere;}
-    .it-d{font-size:13.5px;}
-    .meta{font-size:12.2px;}
-    table{font-size:12.5px;}
-    th,td{padding:8px 9px;}
-    td.t{white-space:normal;overflow-wrap:anywhere;}
-    .exbody{font-size:13.8px;line-height:1.85;padding:11px 12px;border-radius:8px;overflow-wrap:anywhere;}
-    .art{font-size:12.5px;line-height:1.85;}
-    details>summary{font-size:13.2px;padding:10px 12px;line-height:1.5;overflow-wrap:anywhere;}
-    details .exbody{padding:4px 12px 12px;}
-    .grp>summary{font-size:12.8px;padding:10px 12px;}
-    .grp .item{padding:10px 12px;}
-    .steps{grid-template-columns:1fr;gap:10px;}
-    .step summary{padding:11px 13px;gap:8px;}
-    .step summary .st{font-size:13.8px;}
-    .step summary .no{font-size:10px;}
-    .step li{font-size:13px;}
-    .sub{font-size:12.5px;}
-    .minih{font-size:11px;}
-    .chain{font-size:12.8px;padding:9px 11px;}
-    .dirh{font-size:14px;margin-top:26px;}
-    .hint{font-size:12.2px;}
-    .tag{font-size:10px;padding:1px 6px;}
-    .tb-wenlei th:first-child,.tb-wenlei td:first-child{width:30%;}
-    .tb-wenlei th,.tb-wenlei td{padding:11px 8px;}
-    .tb-wenlei td.t{font-size:13.5px;}
-    .tb-wenlei td.t .tag{margin-top:5px;}
-    .tb-wenlei td.use{font-size:12.5px;line-height:1.75;}
-    footer{font-size:10.8px;letter-spacing:.5px;line-height:1.9;}
-    .ft-line{font-size:12px;letter-spacing:1px;}
-    .ft-meta{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 10px;margin:2px 0 12px;}
-    .ft-meta span{display:block;flex:0 0 45%;text-align:center;background:var(--card);
-      border:1px solid var(--line);border-radius:20px;padding:4px 6px;font-size:11.5px;line-height:1.6;}
-    .ft-meta span:not(:last-child)::after{content:none;}
-    .ft-note{font-size:10.5px;line-height:2;}
-    .ft-ref-t{margin-bottom:5px;}
-    .ft-refs{flex-direction:column;gap:3px;margin-bottom:9px;}
-    .ft-refs li{font-size:10.5px;line-height:1.7;}
-  }
-  @media (max-width:380px){
-    .wrap{padding:0 22px 66px;}
-    h1{font-size:22px;letter-spacing:1px;}
-    #q{font-size:14px;}
-    .it-t{font-size:15px;}
-    th,td{padding:7px 7px;}
-    .chip{font-size:11.5px;padding:5px 9px;}
-  }
+/* 说文 */
+.shuowen{margin:18px 0 4px;padding:14px 16px;background:var(--box);border-left:2px solid var(--red);
+  font-size:13.5px;line-height:2;color:var(--ink);letter-spacing:.3px}
+.shuowen.kx{border-left-color:var(--mut)}
+.shuowen .txt.clip{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;
+ overflow:hidden;text-overflow:ellipsis}
+.shuowen .more{display:block;margin-top:6px;font-family:inherit;font-size:11px;letter-spacing:1.5px;
+ color:var(--red);background:transparent;border:none;cursor:pointer;padding:0;opacity:.85}
+.shuowen .more:hover{opacity:1;text-decoration:underline}
+.shuowen .lb{display:block;font-size:10.5px;color:var(--dim);letter-spacing:2.4px;margin-bottom:5px}
+.shuowen .zw{font-size:12.5px;color:var(--mut);margin-top:7px;letter-spacing:1.5px}
+.shuowen .zw span{font-size:19px;color:var(--red);margin-left:4px;cursor:pointer;letter-spacing:0}
+.shuowen .zw span:hover{text-decoration:underline}
+.shuowen .zw .zwlb{font-style:normal;font-size:10px;color:var(--dim);letter-spacing:.5px;margin:0 6px 0 4px}
+.shuowen .zw img.zwi{height:19px;width:auto;vertical-align:-3px;margin:0 3px;cursor:pointer}
+.shuowen .zw i.zwna{font-style:normal;color:var(--dim);font-size:13px;margin:0 3px;border-bottom:1px dotted var(--dim)}
 
-  @media print{
-    .searchwrap,.back,#results{display:none!important;}
-    .home,.detail{display:block!important;}
-    .item{break-inside:avoid;}
-    body{background:#fff;}
-  }
+/* 分区标题 */
+.sect{display:flex;align-items:baseline;gap:10px;margin:26px 0 14px}
+.sect h3{font-size:13px;font-weight:500;letter-spacing:3.5px;color:var(--ink)}
+.sect .n{font-size:11px;color:var(--dim);letter-spacing:1px}
+.sect .ln{flex:1;height:1px;background:var(--line)}
+.fbar{display:flex;justify-content:center;margin:-6px 0 16px}
+.fbar .fb{font-family:inherit;font-size:11.5px;padding:3px 13px;border:1px solid var(--line);
+ background:transparent;color:var(--mut);cursor:pointer;letter-spacing:1.5px;margin:0 -1px 0 0}
+.fbar .fb:first-child{border-radius:2px 0 0 2px}
+.fbar .fb:last-child{border-radius:0 2px 2px 0}
+.fbar .fb.on{background:var(--red);border-color:var(--red);color:#fff;position:relative;z-index:1}
+.fbar .fb:hover{color:var(--red)}
+.fbar .fb.on:hover{color:#fff}
+
+/* 异体网格 */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+.vg{position:relative;aspect-ratio:1/1.13;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;background:var(--box);border:1px solid var(--line);border-radius:2px;
+  cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;padding:4px;overflow:hidden}
+.vg:hover{border-color:var(--red);transform:translateY(-3px);box-shadow:0 8px 16px var(--shadow)}
+.vg .g{font-size:33px;line-height:1.15;color:var(--ink)}
+.vg .gl{font-size:9px;color:var(--dim);letter-spacing:.2px;margin-top:2px;margin-bottom:9px;font-family:var(--sans)}
+.vg .tag{position:absolute;top:3px;right:4px;font-size:9px;color:var(--red);opacity:.85;line-height:1}
+.vg .rad{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:8px;color:var(--dim);
+  letter-spacing:.2px;font-family:var(--sans)}
+.vg.rel-v{background:transparent;border-style:dashed}
+.grid.f-kai .g{font-family:"Kaiti SC","KaiTi","STKaiti","Kaiti TC","Noto Serif CJK SC",serif}
+.grid.f-hei .g{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+.zi.f-kai{font-family:"Kaiti SC","KaiTi","STKaiti","Kaiti TC","Noto Serif CJK SC",serif}
+.zi.f-hei{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+.zi.f-kai{font-size:112px}
+.zi.f-hei{font-size:100px}
+.grid.f-xing .g{font-family:"STXingkai","华文行楷","Xingkai SC","Hannotate SC","HanziPen SC","Kaiti SC",cursive}
+.zi.f-xing{font-family:"STXingkai","华文行楷","Xingkai SC","Hannotate SC","HanziPen SC","Kaiti SC",cursive;
+ font-size:110px}
+.vg.has-z::after{content:"";position:absolute;top:4px;left:4px;width:3px;height:3px;border-radius:50%;background:var(--red);opacity:.5}
+
+/* 未收字 */
+.lost{margin-top:14px}
+.lost summary{font-size:11.5px;color:var(--mut);letter-spacing:1.2px;cursor:pointer;list-style:none;
+  padding:5px 0;border-bottom:1px dashed var(--line)}
+.lost summary::-webkit-details-marker{display:none}
+.lost summary::before{content:"▸ ";color:var(--dim)}
+.lost[open] summary::before{content:"▾ "}
+.lost .body{margin-top:10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px}
+.lost i{display:block;font-style:normal;font-size:9px;color:var(--dim);text-align:center;padding:7px 2px;
+  background:var(--box);border:1px dashed var(--line);border-radius:2px;font-family:var(--sans);line-height:1.4}
+
+/* 关联 */
+.rel{margin-top:8px}
+.chip{display:inline-block;margin:3px 5px 3px 0;padding:2px 10px;border:1px solid var(--line);border-radius:2px;
+  font-size:13px;color:var(--mut);cursor:pointer;transition:.2s;background:transparent;font-family:var(--serif)}
+.chip:hover{border-color:var(--red);color:var(--red)}
+
+/* 空态 */
+.empty{text-align:center;padding:46px 10px;color:var(--dim);font-size:13px;letter-spacing:1.5px;line-height:2.2}
+
+/* 碑文模式 */
+.glyphs{display:flex;flex-wrap:wrap;gap:7px}
+.gl-item{width:58px;text-align:center;cursor:pointer;padding:7px 2px 5px;border:1px solid var(--line);
+  border-radius:2px;background:var(--box);transition:.2s}
+.gl-item:hover{border-color:var(--red);transform:translateY(-2px)}
+.gl-item .c{font-size:25px;line-height:1.2;display:block}
+.gl-item .n{font-size:9px;color:var(--dim);display:block;margin-top:2px;font-family:var(--sans)}
+.gl-item.has .n{color:var(--red)}
+
+footer{margin-top:34px;text-align:center;font-size:10.5px;color:var(--dim);line-height:2;letter-spacing:.3px}
+footer a{color:var(--mut);text-decoration:none;border-bottom:1px dotted var(--line)}
+
+@media(max-width:600px){
+  body{padding:40px 15px 60px}
+  .parts{padding:12px}
+  .pad{grid-template-columns:repeat(auto-fill,minmax(30px,1fr));gap:3px}
+  .pb{font-size:15px;padding:6px 0}
+  h1{font-size:25px;letter-spacing:8px}
+  .card{padding:22px 18px 20px}
+  .head{gap:16px}
+  .zi{font-size:78px;min-width:88px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px}
+  .vg .g{font-size:26px}
+  .vg .gl{display:none}
+  .vg .rad{display:none}
+  #q{width:190px;font-size:23px}
+}
 </style>
 </head>
 <body>
+<noscript><div style="text-align:center;padding:16px;background:#a8322a;color:#fff;font-size:13px;line-height:1.9">当前环境未执行 JavaScript，页面无法检索。<br>请用浏览器打开本文件。</div></noscript>
+<div id="jscheck" style="text-align:center;padding:14px;background:#a8322a;color:#fff;font-size:12.5px;line-height:1.9">
+  如果你一直看到这一行，说明浏览器没有执行 JavaScript，页面无法输入。<br>请改用 Chrome / Edge / Safari 打开本文件
+</div>
 <div class="wrap">
   <header>
-    <h1>民国公文速查</h1>
-    <div class="sub">文种 · 用语 · 惯用辞令</div>
-    <div class="searchwrap">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5c554a" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input id="q" type="text" placeholder="输入套语名搜索，如「等因」「仰祈」「此令」">
-      <button class="clear" id="clearq" title="清空">✕</button>
-    </div>
+    <h1>字的分身</h1>
+    <div class="sub">历代异体 · 简繁 · 《说文》重文</div>
+    <div class="stat">20,125 正字 · 78,016 条异体关系 · 27,983 个可显示字形</div>
   </header>
 
-  <section class="home" id="home">
-    <div class="tool-cta" id="toolCta">
-      <div class="tc-main">
-        <div class="tc-t">公文识读</div>
-        <div class="tc-d">粘贴一篇公文，自动标红套语、点按看释义，并生成识读报告。本地运行，不上传、不耗流量。</div>
-      </div>
-      <div class="tc-btn">进入识读 →</div>
+  <div class="search"><input id="q" maxlength="12" placeholder="输入汉字" autocomplete="off" spellcheck="false"></div>
+
+  <div class="toolbar">
+    <button id="parts-btn">拆解部件</button>
+    <button id="rnd">随机一字</button>
+  </div>
+  <div class="quick" id="quick"></div>
+
+  <div class="tsep"></div>
+
+  <div class="toolbar tb-view">
+    <span class="themes">
+      <button class="th on" data-k="paper">宣纸</button>
+      <button class="th" data-k="rubbing">碑拓</button>
+    </span>
+    <button id="save">存成图片</button>
+  </div>
+  <div class="parts" id="parts" hidden>
+    <div class="picked" id="picked"><span class="pempty">点下方部件开始组合 · 可多选</span></div>
+    <div class="prow">
+      <input id="pin" placeholder="输部件，或输一个字看拆解" autocomplete="off" spellcheck="false">
+      <button id="pclear">清空</button>
     </div>
-    <div class="home-hint">资料浏览 · 点击进入</div>
-    <div class="cards" id="cards"></div>
-  </section>
-
-  <section class="detail" id="detail">
-    <button class="back" id="back">← 返回大类</button>
-    <div class="sec-h" id="dh"></div>
-    <div class="sec-d" id="dd"></div>
-    <div class="subtabs" id="subtabs"></div>
-    <div id="dbody"></div>
-  </section>
-
-  <section id="results">
-    <div class="res-h" id="resh"></div>
-    <div id="resbody"></div>
-    <div class="empty" id="empty">没有找到匹配项，换个关键词试试</div>
-  </section>
-
-  <div id="tpl-li12" style="display:none">
-    <h3 class="minih" style="margin-top:30px">十二文种示例（虚构公文，仅供套语演示）</h3>
-
-    <details><summary>一 · 令（公布法规 / 任免）</summary><div class="exbody">
-      <span class="tk" title="训令起首语，令知＝使其知道">为令知事</span>：兹制定《某县河道管理规则》一种，除公布外，<span class="tk" title="理合行文，引出本机关发文动作">合行</span><span class="tk" title="上级对下级祈使">令仰</span>该县<span class="tk" title="催促性副词，立即">即便</span>遵照，并转饬所属一体知照，<span class="tk" title="令的结尾收束语">此令</span>。
-    </div></details>
-
-    <details><summary>二 · 训令（布置工作）</summary><div class="exbody">
-      <span class="tk" title="训令起首语，令遵＝使下级遵行">为令遵事</span>：<span class="tk" title="案卷内据有下级来文">案据</span>该县<span class="tk" title="引叙下级陈述">呈称</span>河道淤塞、亟应疏浚<span class="tk" title="收束所引下级来文">等情</span>到厅，<span class="tk" title="当时已经">当经</span><span class="tk" title="下行自称">本厅</span>复核属实。<span class="tk" title="理合行文">合行</span><span class="tk" title="上级对下级祈使">令仰</span>该县<span class="tk" title="催促性副词，立即">即便</span>遵照办理，<span class="tk" title="上报办理结果">具报</span>查核，<span class="tk" title="督饬语，不得">毋得</span>稍涉敷衍，<span class="tk" title="谆谆告诫">切切</span><span class="tk" title="令的结尾收束语">此令</span>。
-    </div></details>
-
-    <details><summary>三 · 指令（对呈请的批复）</summary><div class="exbody">
-      <span class="tk" title="来呈已阅">呈悉</span>。据呈请拨发修路经费<span class="tk" title="收束所引来文">等情</span>，所请尚属可行，<span class="tk" title="应当批准">应准</span>如所请办理，<span class="tk" title="希望立即">仰即</span>造具预算，呈候核销。<span class="tk" title="指令结尾，亦用此令">此令</span>。
-    </div></details>
-
-    <details><summary>四 · 布告（对民众宣布）</summary><div class="exbody">
-      <span class="tk" title="布告起首语">为布告事</span>：<span class="tk" title="查察所知，告示体开首">照得</span>本县河道疏浚工程，定于本月十五日开工，所有沿河住户应即迁让，<span class="tk" title="督饬语，不得">毋得</span>阻碍。<span class="tk" title="理合行文">合行</span>布告，<span class="tk" title="对民众祈使">仰</span>一体知照，<span class="tk" title="谆谆告诫">切切</span><span class="tk" title="布告的结尾收束语">此布</span>。
-    </div></details>
-
-    <details><summary>五 · 任命状（任命官吏）</summary><div class="exbody">
-      任命状：<span class="tk" title="任命状起首，标官等">荐任</span>某某为某县教育局局长。此状。
-      <div class="divider"></div>
-      <span style="color:#948b7b;font-size:12.5px">注：任命状分特任、简任、荐任、委任四级，结尾作「此状」。</span>
-    </div></details>
-
-    <details><summary>六 · 呈（上行请示 / 报告）</summary><div class="exbody">
-      <span class="tk" title="上行起首语">呈为呈请事</span>：<span class="tk" title="引叙上级来文">案奉</span><span class="tk" title="上行尊称上级">钧厅</span>训令开，饬即查明灾情具报<span class="tk" title="收束所引上级来文">等因</span>。<span class="tk" title="接到此令，转入自叙">奉此</span>：查<span class="tk" title="下级自称">职县</span>受灾田亩三千余亩、灾民二千余口，业经查勘明确，造册<span class="tk" title="旧卷可稽">在案</span>。<span class="tk" title="下行自称谦词，此处上行亦用「窃」发语">窃查</span>职县仓谷无多，赈济不敷，拟请钧厅<span class="tk" title="催促性副词，迅速">迅予</span>拨发赈款。<span class="tk" title="征求上级裁酌的谦辞">是否有当</span>，<span class="tk" title="理应，引出呈请">理合</span>具文呈请，<span class="tk" title="上行祈请，请审察核定">仰祈鉴核示遵</span>。<span class="tk" title="上行结尾敬语">谨呈</span>某厅厅长。
-    </div></details>
-
-    <details><summary>七 · 签呈（内部签拟）</summary><div class="exbody">
-      签呈：<span class="tk" title="发语词，转入自陈">窃查</span>本府某项经费不敷，拟请于预备费项下动支若干，<span class="tk" title="谦辞，征求裁酌">是否有当</span>，<span class="tk" title="俯伏乞求">伏乞</span>鉴核。<span class="tk" title="上行结尾敬语">谨呈</span>秘书长。
-      <div class="divider"></div>
-      <span style="color:#948b7b;font-size:12.5px">注：签呈为机关内部属员签拟意见、由长官核夺，故止于「谨呈」长官。</span>
-    </div></details>
-
-    <details><summary>八 · 咨（同级机关往来）</summary><div class="exbody">
-      <span class="tk" title="平行文起首语，咨请＝请人办事">为咨请事</span>：<span class="tk" title="引叙平行来文">案准</span><span class="tk" title="平行敬称对方">贵县</span>咨开，以两县交界河道淤塞、亟应疏浚<span class="tk" title="收束所引平行来文">等由</span>。<span class="tk" title="接到平行来文，对应奉此">准此</span>：查此项工程经费，拟由两县分认，尚属可行。<span class="tk" title="结束语，相应函请">相应</span>咨请贵县<span class="tk" title="查明照办">查照</span>，<span class="tk" title="平行祈请，十分希望">即希</span>核复，以便会同兴工。<span class="tk" title="咨的结尾收束语">此咨</span>某县县政府。
-    </div></details>
-
-    <details><summary>九 · 公函（不相隶属机关）</summary><div class="exbody">
-      <span class="tk" title="公函起首，径＝直接说事">径启者</span>：兹有本县水利委员前往贵县接洽河工事宜，<span class="tk" title="平行祈请，十分希望">即希</span><span class="tk" title="查明照办">查照</span><span class="tk" title="请回复">赐复</span><span class="tk" title="结尾客气套语，承情之至">为荷</span>。<span class="tk" title="公函的结尾收束语">此致</span>某机关。
-    </div></details>
-
-    <details><summary>十 · 笺函（常函，同级平常事）</summary><div class="exbody">
-      <span class="tk" title="公函起首，迳＝直接说事">迳启者</span>：本月某日敝县召开水利会议，拟请贵县派员出席，藉资讨论。<span class="tk" title="平行祈请，十分希望">即希</span>查照<span class="tk" title="结尾客气套语">为荷</span>。<span class="tk" title="公函的结尾收束语">此致</span>某县政府。
-      <div class="divider"></div>
-      <span style="color:#948b7b;font-size:12.5px">注：笺函（常函）为同级机关平常事件往来的非正式公函，格式从简。</span>
-    </div></details>
-
-    <details><summary>十一 · 批（对人民陈情之准驳）</summary><div class="exbody">
-      <span class="tk" title="来呈已阅">呈悉</span>。据该民呈请减免摊款<span class="tk" title="收束所引来文">等情</span>，查所请于法<span class="tk" title="不合规定">不合</span>，<span class="tk" title="不必再提，即不行">应毋庸议</span>。<span class="tk" title="批的结尾收束语">此批</span>。
-    </div></details>
-
-    <details><summary>十二 · 电 / 代电（快捷文书）</summary><div class="exbody">
-      某厅电：<span class="tk" title="电文开头，表示收到来电">电悉</span>。该县灾情已据呈报在案，赈款<span class="tk" title="立即批准">准即</span>拨发，<span class="tk" title="希望立即">仰即</span>具领散放<span class="tk" title="上报结果">具报</span>。厅长某某。某日。
-      <div class="divider"></div>
-      <span style="color:#948b7b;font-size:12.5px">注：电文为省字数，常以韵母代日、地支代月（如「十二日电悉」），电不通处用快邮代电、航空代电。</span>
-    </div></details>
+    <div class="psec">
+      <span id="padTitle">常用部件</span>
+      <button id="padToggle">全部 214 部首</button>
+    </div>
+    <div class="pad" id="pad"></div>
+    <div class="decomp" id="decomp" hidden></div>
+    <div class="rstat" id="pstat"></div>
+    <div class="rgrid" id="pres"></div>
   </div>
+  <div class="hint" id="hint"></div>
 
-  <div id="tpl-lifa" style="display:none">
-    <p class="hint">以下为示例性虚拟公文（非真实档案），覆盖上行、下行、平行、布告四种方向。速查表的例句均取自这四篇。<br>
-    <span class="tk">红色带下划线</span>为套语，电脑端悬停、手机端点按，均可查看释义。</p>
-
-    <details>
-      <summary>例文甲 · 上行：某县县长呈省民政厅（呈请拨发赈款）</summary>
-      <div class="exbody">
-        <span class="tk" title="公文首句引端语，标明文种与事由">呈为呈请事</span>：
-        <span class="tk" title="案卷内奉到上级来文">案奉</span><span class="tk" title="上行尊称上级">钧厅</span>训令<span class="tk" title="引述上级公文，开＝下文开列">开</span>，以本省今夏水灾奇重，<span class="tk" title="命令、责成办理">饬即</span>查明灾情<span class="tk" title="上报">具报</span><span class="tk" title="收束所引上级令文">等因</span>。
-        <span class="tk" title="接到此令，转入本机关自叙">奉此</span>：查<span class="tk" title="下级自称">职县</span>受灾田亩共三千余亩，灾民二千余口，业经派员分赴各区查勘明确，造具清册<span class="tk" title="此前已有公文存档可稽">在案</span>。
-        <span class="tk" title="上行文自称，表恭谨">窃查</span>职县仓谷无多，赈济不敷，拟请钧厅<span class="tk" title="催促性副词，迅速">迅予</span>拨发赈款五千元，以资救济。<span class="tk" title="上行征求同意的客套">是否有当</span>，<span class="tk" title="结束语，按理应当，引出呈请">理合</span>具文呈请，<span class="tk" title="上行祈请语，请审察核定">仰祈鉴核</span><span class="tk" title="请给指示以便遵行">示遵</span>。<span class="tk" title="上行文结尾敬语">谨呈</span>。
-      </div>
-    </details>
-
-    <details>
-      <summary>例文乙 · 下行：省民政厅训令各县（发放赈款）</summary>
-      <div class="exbody">
-        <span class="tk" title="训令起首语，令遵＝使下级遵行">为令遵事</span>：
-        <span class="tk" title="案卷内据有下级来文">案据</span>该县呈报灾情清册到厅，<span class="tk" title="当时已经">当经</span><span class="tk" title="下行自称">本厅</span>复核属实，<span class="tk" title="承转经字族，已经">业经</span>呈奉省政府核准拨发赈款<span class="tk" title="此前已有公文存档可稽">各在案</span>。
-        <span class="tk" title="理合行文，引出本机关发文动作">合行</span>令<span class="tk" title="上级对下级祈使">仰</span><span class="tk" title="下行称对方">该县</span><span class="tk" title="催促性副词，立即">即便</span>遵照，<span class="tk" title="催促性副词，迅速">迅</span>将赈款如数具领，按户散放，造册<span class="tk" title="上报／回复上级">具报</span>，<span class="tk" title="督饬语，不得稍有">毋得稍涉</span>浮冒，<span class="tk" title="警告后果，否则将有所不便">致干未便</span>。<span class="tk" title="谆谆告诫，语气最重的催促">切切</span><span class="tk" title="令的结尾收束语">此令</span>。<span class="tk" title="附件说明">计抄发</span>赈款分配清册一件。
-      </div>
-    </details>
-
-    <details>
-      <summary>例文丙 · 平行：甲县咨乙县 · 附公函</summary>
-      <div class="exbody">
-        <span class="tk" title="平行文起首语，咨请＝请人办事">为咨请事</span>：<span class="tk" title="平行引叙来文之敬语">案准</span><span class="tk" title="平行敬称对方">贵县</span>咨<span class="tk" title="引述来文">开</span>，以两县交界河道淤塞，亟应疏浚<span class="tk" title="收束所引平行来文">等由</span>。
-        <span class="tk" title="接到平行来文，对应奉此">准此</span>：查此项工程所需经费，拟由两县分认，尚属可行。<span class="tk" title="结束语，相应函请">相应</span>咨请贵县<span class="tk" title="查明照办">查照</span>，<span class="tk" title="平行祈请，请求回复">即希</span>核复，以便会同兴工。<span class="tk" title="咨的结尾收束语">此咨</span>。
-        <div class="divider"></div>
-        <span class="tk" title="公函起首语，径＝直接说事">径启者</span>：兹有本县水利委员前往贵县接洽河工事宜，<span class="tk" title="平行祈请，十分希望">即希</span>查照<span class="tk" title="平行祈请，请回复">赐复</span><span class="tk" title="平行结尾客气套语，承情之至">为荷</span>。<span class="tk" title="公函的结尾收束语">此致</span>。
-      </div>
-    </details>
-
-    <details>
-      <summary>例文丁 · 布告：某县政府布告（河道疏浚）</summary>
-      <div class="exbody">
-        <span class="tk" title="布告起首语">为布告事</span>：<span class="tk" title="查察所知，告示体开首">照得</span>本县河道疏浚工程，定于本月十五日开工，所有沿河住户应即迁让，毋得阻碍。<span class="tk" title="理合行文，引出本机关发文动作">合行</span>布告，<span class="tk" title="上级对下级／对民众祈使">仰</span>一体知照，<span class="tk" title="谆谆告诫">切切</span><span class="tk" title="布告的结尾收束语">此布</span>。
-      </div>
-    </details>
-  </div>
-  <div id="tpl-fagui" style="display:none">
-    <p class="hint">民国公文程式并非一纸定于始终。以下按时间列出五版规则，附法规原文（据《临时政府公报》《政府公报》及维基文库校录）。</p>
-
-    <details>
-      <summary>一 · 1912 年 1 月　《临时政府公文程式》（南京临时政府，5 条）</summary>
-      <div class="exbody">
-        <p class="ver-note">法制院拟定、呈临时大总统，内务部颁行，载《临时政府公报》第 2 号。中国第一个规范公文文种的现代规章，废除「制、诏、敕、奏、表、笺」等帝制文种。</p>
-        <div class="art">第一条　凡自大总统以下各公署职员及人民一切行用公文，俱照以下程式办理。
-第二条　行用公文分为左五种：
-　甲　上级公署职员行用于下级公署职员曰令；公署职员行用于人民者曰令或谕。
-　乙　同级公署职员互相行用者曰咨。
-　丙　下级公署职员行用于上级公署职员及人民行用于公署职员者曰呈。
-　丁　公署职员公告一般人民者曰示；但经参议院议决之法规，应由大总统宣布者曰公布。
-　戊　任用职员及授赏徽章之证书曰状。
-第三条　凡公文皆须盖印签名并署年月日；但人民行用于公署职员之呈文，得免其盖印。
-第四条　各公署行用于外国之公文，仍照向例办理。
-第五条　凡大总统及各部所发之公文有通行性质者，皆须登于公报。各公文除特定有施行期限者外，京城以登载临时政府公报之第五日为施行期；其余各处以公报到达公署之第五日为施行期。</div>
-        <p class="ver-note"><span class="hl">要点</span>：五类文种（令/谕、咨、呈、示/公布、状），后补「批」「照会」，共八至九种。「左」为竖排自右向左之谓，原文用字。</p>
-      </div>
-    </details>
-
-    <details>
-      <summary>二 · 1912 年 11 月 6 日　《公文书程式》（教令第一号，节录前十二条）</summary>
-      <div class="exbody">
-        <p class="ver-note">袁世凯以临时大总统公布，教令第一号。亦称《公文程式令》。将南京版的「谕」「示」并入「布告」，定为七类：<b>令、布告、状、咨、公函、呈、批</b>；「令」下分大总统令、院令、部令、委任令、训令、指令、处分令。</p>
-        <div class="art">第一条　法律以大总统令公布之。前项大总统令，须记明经参议院议决，由大总统盖印，国务总理记入年月日副署之，或与其他国务员或主管国务员副署之。
-第二条　教令以大总统令公布之。前项大总统令，由大总统盖印，国务总理记入年月日副署之，或与其他国务员或主管国务员副署之。
-第三条　国际条约之发布者，以大总统令公布之。前项大总统令，须记明经参议院之同意及批准之年月日，由大总统署名盖印，国务总理记入年月日，与主管国务员副署之。
-第四条　预算以大总统令公布之。前项大总统令，须记明经参议院之议决，由大总统盖印，国务总理记入年月日，与主管国务员副署之。
-第五条　特任官、简任官、荐任官之任命，以大总统令公布之。
-第六条　院令由国务总理记入年月日署名盖印。
-第七条　部令由各部总长记入年月日署名盖印。
-第八条　事实之宣布，及就特定事项对于一般人民命其行为或不行为之文书，以布告公布之。大总统布告，由大总统盖印，国务总理记入年月日副署之；行政各官署之布告，由该管署长官记入年月日署名盖印。
-第九条　第一条至第八条之公文书，须于政府公报公布之。
-第十条　特任官、简任官之任命状，由大总统署名盖印，国务总理记入年月日副署之；荐任官之任命状，由大总统盖印，国务总理或主管国务员记入年月日副署之；委任官之任命状，由各该官署长官记入年月日署名盖印。
-第十一条　大总统对于官吏，及上级官对于下级官，有所差委以委任令行之，有所指挥以训令行之，其因呈请而有所指挥者以指令行之。第八条第二项及第三项之规定，得于委任令、训令、指令准用之。
-第十二条　行政……（以下各条分别规定咨、公函、呈、批之适用范围）</div>
-        <p class="ver-note"><span class="hl">要点</span>：确立「副署」制度——大总统令须国务总理副署，体现《临时约法》下的责任内阁制。此版沿用至 1914 年 5 月。</p>
-      </div>
-    </details>
-
-    <details>
-      <summary>三 · 1914 年 5 月 26 日　三个程式令（新约法时期）</summary>
-      <div class="exbody">
-        <p class="ver-note">袁世凯废国务院、设政事堂，一日之内连颁三令，把公文按发文者身份分成三套，实为恢复文书等级制。</p>
-        <p class="ver-note"><b>（1）《大总统公文程式令》（教令第七十三号，全文 11 条）</b></p>
-        <div class="art">第一条　大总统命令，分为左列各种：一、策令。二、申令。三、告令。四、批令。
-第二条　左列事项，以大总统策令行之：一、任免文武职官。二、颁给爵位、勋章并其他荣典。
-第三条　左列事项，以大总统申令行之：一、公布法律。二、公布教令。三、公布条约。四、公布预算。五、对于各官署及文武职官之指挥训示。六、其他大总统依其职权执行之事件。
-第四条　大总统对于人民之宣示，以告令行之。
-第五条　大总统裁答各官署之陈请，以批令行之。
-第六条　大总统与立法院往复公文，以咨行之。
-第七条　策令、申令、告令、批令盖用大总统印，由国务卿副署。
-第八条　咨盖用大总统印。
-第九条　大总统之公文，须于政府公报公布之。
-第十条　本令第一条、第六条公文之格式，依附表所定。
-第十一条　本令自公布日施行。</div>
-        <p class="ver-note"><b>（2）《大总统府政事堂公文程式令》</b>：封寄、交片、咨呈、咨、公函，共 5 种。</p>
-        <p class="ver-note"><b>（3）《大总统公布官署公文程式令》</b>：呈、详、饬、咨、咨陈、示、批、禀，共 8 种（另有密呈、密详）。</p>
-        <p class="ver-note"><span class="hl">要点</span>：大量复活帝制文种（策、申、告、批、详、饬、禀），是袁氏复辟在文书上的反映。1915 年底更恢复奏折。</p>
-      </div>
-    </details>
-
-    <details>
-      <summary>四 · 1916 年 7 月　《公文程式》（黎元洪/段祺瑞政府，13 种）</summary>
-      <div class="exbody">
-        <p class="ver-note">袁氏败亡后恢复共和体制，废策令、申令等，回归 1912 年框架并加细化。第一次给公文下定义：「凡处理公事之文件曰公文」。</p>
-        <div class="art">文种十三种：大总统令、国务院令、各部院令、任命状、委任令、训令、指令、布告、咨、咨呈、呈、公函、批。</div>
-        <p class="ver-note"><span class="hl">要点</span>：新增「咨呈」（特任官署向国务院行文用），是「咨」与「呈」的混合体。此版沿用至北洋政府终结（1928）。另有异文作「委任状」而非「委任令」。</p>
-      </div>
-    </details>
-
-    <details>
-      <summary>五 · 1928 年 11 月 15 日　《公文程式条例》（国民政府，6 条全文）</summary>
-      <div class="exbody">
-        <p class="ver-note">1927 年 8 月国民政府首颁（10 种：令、通告、训令、指令、任命状、呈、咨、咨呈、公函、批答）；1928 年 6 月修订（改「通告」为「布告」、「批答」为「批」，废咨、咨呈，增状，9 种）。<b>1928 年 11 月 15 日</b>再修订，废状、复咨，仍 9 种——此版影响最深，为后世所本。</p>
-        <div class="art">第一条　凡称公文者，谓处理公务之文书，其程式依本条例之规定。
-第二条　公文之类别如左：
-　一、令：公布法令、任免官吏及有所指挥时用之。
-　二、训令：上级机关对于所属下级机关，有所谕饬或差委时用之。
-　三、指令：上级机关对于所属下级机关，因呈请而有所指示时用之。
-　四、布告：对于公众宣布事实或有所劝诫时用之。
-　　以上属于国民政府经国务会议议决者，由主席及五院院长署名，盖用国民政府之印；其例行之训令、指令由主席署名，盖用国民政府之印；属于其他机关者，由各该机关之长官或主席或常务委员署名，盖用各该机关之印。
-　五、任命状：任命官吏时用之。（分特任、简任、荐任、委任四级，署名盖印各有等差）
-　六、呈：五院对于国民政府，或各院所组织之机关对于各该院，及其他下级机关对于直辖上级机关，或人民对于公署有所陈请时用之。
-　七、咨：同级机关公文往复时用之。
-　八、公函：不相隶属之机关公文往复时用之。
-　九、批：各机关对于人民陈请事项分别准驳时用之。
-第三条　五院对于各省政府及其所属机关之公文，以令行之。
-第四条　公文应记明年月日，并由负责者署名盖章。
-第五条　政府发布之公文，除密件外，应于国民政府公报公布之。
-第六条　本条例自公布日施行。</div>
-        <p class="ver-note"><span class="hl">要点</span>：<b>九类文种</b>（令、训令、指令、布告、任命状、呈、咨、公函、批），行文方向三分——下行（令、训令、指令、布告、任命状、批）、上行（呈）、平行（咨、公函）。1942 年再修，咨与公函合并为「函」。</p>
-      </div>
-    </details>
-  </div>
+  <main id="card"><div class="card"><div class="empty" style="padding:64px 10px 70px">
+    <div style="font-size:15px;letter-spacing:4px;color:var(--dim)">数据载入中…</div>
+    <div style="font-size:11px;margin-top:12px;color:var(--dim);letter-spacing:.5px">首次打开需下载约 4 MB</div>
+  </div></div></main>
 
   <footer>
-    <div class="ft-line">民国公文速查</div>
-    <div class="ft-meta">
-      <span>文种 12</span><span>用语 12 类</span><span>惯用辞令 87 条</span><span>例文 16 篇</span><span>法规 5 版</span>
-    </div>
-    <div class="ft-note">
-      <div class="ft-ref-t">参考资料</div>
-      <ul class="ft-refs">
-        <li>汪海涛《如何识读民国公文档案？》</li>
-        <li>《临时政府公文程式》（1912）</li>
-        <li>《公文书程式》（1912）</li>
-        <li>《公文程式》（1916）</li>
-        <li>《公文程式条例》（1928）</li>
-      </ul>
-      <div class="ft-disc">例文均为虚构示例，非真实档案，仅供学习查阅。</div>
-    </div>
+    数据来源：《異體字字典》〈異體字表〉（2024・正式七版，76,191 字）<br>
+    《说文解字》重文 · Unicode Unihan 数据库 · 供学习研究之用<br>
+    本页为离线单文件，不联网、不追踪
   </footer>
 </div>
 
+<script src="https://cdn.jsdelivr.net/gh/kanshin999/yitizi-dict@main/data.js"></script>
 <script>
-const ITEMS = [{"t":"案查","p":"an cha","ab":"ac","d":"查考案卷、经查察，用以交代据以行文的案由。","u":"布告、令、呈的开头，交代据以行文的案由。","e":"案查本县河道淤塞多年，亟应疏浚……","s":"例文丁","n":"「案查」偏公文，「照得」偏告示。","f":"引叙语","dir":"通用","py":"àn chá"},{"t":"为……事","p":"wei shi","ab":"ws","d":"公文起首语，标明文种与事由，如「为令遵事」「呈为呈请事」「为布告事」。","u":"各类公文开头通用：令作「为令遵事」，呈作「呈为呈请事」，布告作「为布告事」。","e":"呈为呈请事；为令遵事；为布告事","s":"例文甲·乙·丁","n":"","f":"起首语","dir":"通用","py":"wèi……shì"},{"t":"照得","p":"zhao de","ab":"zd","d":"查察所知、查得；多用于布告开首，直接向民众说明事由。","u":"布告、告示的开头，直接向民众说明事由，带晓谕口吻。","e":"照得本县河道疏浚工程，定于本月十五日开工……","s":"例文丁","n":"","f":"起首语","dir":"下行","py":"zhào dé"},{"t":"案奉","p":"an feng","ab":"af","d":"案卷内奉到上级来文；「奉」为敬称，指上级。","u":"引述上级训令、指令，常接「……开」。","e":"案奉钧厅训令开……","s":"例文甲","n":"「奉」为敬称指上级；平行用「案准」，下级用「案据」。","f":"引叙语","dir":"上行","py":"àn fèng"},{"t":"案据","p":"an ju","ab":"aj","d":"案卷内据有（下级或民众来文）。","u":"引述下级官署呈文或民众状纸，常接「……等情」。","e":"案据该县呈报灾情清册到厅……","s":"例文乙","n":"","f":"引叙语","dir":"下行","py":"àn jù"},{"t":"案准","p":"an zhun","ab":"az","d":"案卷内准到（平行机关来文）。","u":"引述同级、不相隶属机关的咨、公函。","e":"案准贵县咨开……","s":"例文丙","n":"案奉（上）／案据（下）／案准（平），一字见方向。","f":"引叙语","dir":"平行","py":"àn zhǔn"},{"t":"据……等情","p":"ju deng qing","ab":"jdq","d":"「据」引出所据来文，「等情」收束其内容。","u":"引述下级官署或民众来文的起句。","e":"据该县呈称灾情奇重……等情到厅","s":"例文乙","n":"","f":"引叙语","dir":"下行","py":"jù……děng qíng"},{"t":"窃","p":"qie","ab":"q","d":"自谦之词；上行文自陈意见时用以发端，如「窃查」「窃据」。","u":"上行呈文开头自称：窃查、窃自、窃据。","e":"窃查职县仓谷无多……","s":"例文甲","n":"","f":"起首语","dir":"上行","py":"qiè"},{"t":"开（令开/训令开）","p":"kai","ab":"k","d":"引述上级或平行公文时表示「下文开列」。","u":"紧接「案奉……训令」「案准……咨」之后，引出原文。","e":"案奉钧厅训令开；案准贵县咨开","s":"例文甲·丙","n":"","f":"引叙语","dir":"通用","py":"kāi（lìng kāi/xùn lìng kāi）"},{"t":"径启者 / 迳复者","p":"jing qi zhe","ab":"jqz","d":"公函起首语。「径」即直接说事；恭敬可作「谨启者」「敬复者」。","u":"不相隶属机关之间以公函行文（函请、函复）。","e":"径启者：兹有本县水利委员前往贵县接洽……","s":"例文丙","n":"公函专用起首，与「为……事」结构不同。","f":"起首语","dir":"平行","py":"jìng qǐ zhě / jìng fù zhě"},{"t":"为咨……事（咨请/咨领/咨商）","p":"wei zi shi","ab":"wzs","d":"平行文起首语。请人办事＝咨请，领款领物＝咨领，商量办法＝咨商。","u":"同级机关行文。","e":"为咨请事……","s":"例文丙","n":"","f":"起首语","dir":"平行","py":"wèi zī……shì（zī qǐng/zī lǐng/zī shāng）"},{"t":"为令知事 / 为令遵事 / 为令饬事","p":"wei ling zhi shi","ab":"wlzs","d":"训令起首三式：令知＝使其知道，令遵＝使其遵行，令饬＝责成办理。","u":"上级主动向下级布置工作，三式对应「知道什么／做什么／怎么做」。","e":"为令遵事……","s":"例文乙","n":"另有「为令委事」「为令催事」，属委办、催办一类。","f":"起首语","dir":"下行","py":"wèi lìng zhī shì / wèi lìng zūn shì / wèi lìng chì shì"},{"t":"为通令事 / 为布告事","p":"wei tong ling shi","ab":"wtls","d":"通令、布告的起首语。","u":"通令对下级，布告对民众。","e":"为布告事……","s":"例文丁","n":"","f":"起首语","dir":"下行","py":"wèi tōng lìng shì / wèi bù gào shì"},{"t":"特任 / 特派 / 任命","p":"te ren","ab":"tr","d":"任命状的起首语，标明任命性质。","u":"专用于任命状：特任、简任、荐任、委任四级。","e":"特任某某为……（任命状例）","s":"通用","n":"","f":"起首语","dir":"下行","py":"tè rèn / tè pài / rèn mìng"},{"t":"电悉 / 文电悉","p":"dian xi","ab":"dx","d":"电文开头，表示收到来电（如「十二日电悉」）。","u":"电报、代电的开头，相当于「来电已阅」。","e":"十二日电悉……","s":"通用","n":"电文常用韵母代日、地支代月以省字数。","f":"起首语","dir":"下行","py":"diàn xī / wén diàn xī"},{"t":"前据 / 现据 / 兹据","p":"qian ju","ab":"qj","d":"「据」的时序变体：先前据／现在据／此时据。","u":"区分引述来文的先后，理清办案时序。","e":"前据该县呈称……；现据该县覆称……","s":"通用","n":"","f":"引叙语","dir":"下行","py":"qián jù / xiàn jù / zī jù"},{"t":"等因","p":"deng yin","ab":"dy","d":"收束所引上级来文的结尾套语，意为「以上就是来文所说的」。","u":"「引上接下」第一环：引完上级训令/指令，用它收口。","e":"……饬即查明灾情具报等因。","s":"例文甲","n":"与「等情」（下级来文）、「等由」（平行来文）分工不同。","f":"关界语","dir":"上行","py":"děng yīn"},{"t":"奉此","p":"feng ci","ab":"fc","d":"接到此（令）。","u":"紧接「等因」之后，标志本机关开始叙述办理经过。","e":"……等因。奉此：查职县受灾田亩……","s":"例文甲","n":"「等因」是别人的话，「奉此」之后才是自己的话，读长句的分水岭。","f":"承转语","dir":"上行","py":"fèng cǐ"},{"t":"等因奉此","p":"deng yin feng ci","ab":"dyfc","d":"「等因」＋「奉此」连用，旧公文最典型的引据承接套语。","u":"引述上级来文并接叙本机关办理；后引申指官样文章、照例敷衍。","e":"……等因。奉此：查职县……","s":"例文甲","n":"","f":"承转语","dir":"上行","py":"děng yīn fèng cǐ"},{"t":"等情","p":"deng qing","ab":"dq","d":"收束所引下级官署呈文或民众状纸的结尾套语。","u":"转述呈、状、禀之后收口，常作「等情到厅/到署/前来」。","e":"……等情到厅","s":"例文乙","n":"","f":"关界语","dir":"下行","py":"děng qíng"},{"t":"等由","p":"deng you","ab":"dyou","d":"收束所引平行机关来文（咨、公函）的结尾套语。","u":"同级机关往来文书的引述收口。","e":"……以两县交界河道淤塞，亟应疏浚等由。","s":"例文丙","n":"三等收束语：等因（上下行）、等情（呈状）、等由（平行）。","f":"关界语","dir":"平行","py":"děng yóu"},{"t":"等语","p":"deng yu","ab":"dyu","d":"收束所引供词、口供、问答的结尾套语。","u":"审讯、笔录类文书中引述当事人供述。","e":"……供称该款系经手人挪用等语","s":"通用","n":"","f":"关界语","dir":"通用","py":"děng yǔ"},{"t":"各在案 / 在案","p":"ge zai an","ab":"gza","d":"此前已有公文存档可稽，援引作依据。","u":"叙述办理经过时，用「各在案」收束一系列旧有文书，坐实依据。","e":"……业经呈奉省政府核准拨发赈款各在案","s":"例文乙","n":"","f":"到达语","dir":"通用","py":"gè zài àn / zài àn"},{"t":"有案","p":"you an","ab":"ya","d":"已有旧案可查（强调先例存在）。","u":"核定、援引前案时用。","e":"此案在卷有案","s":"通用","n":"在案＝曾经存档；有案＝确有先例可援。","f":"到达语","dir":"通用","py":"yǒu àn"},{"t":"当经 / 旋经","p":"dang jing","ab":"dj","d":"当时已经／随即已经。","u":"叙述办案时序，交代某环节已做过。","e":"当经本厅复核属实","s":"例文乙","n":"","f":"承转语","dir":"下行","py":"dāng jīng / xuán jīng"},{"t":"即经 / 业经 / 前经","p":"ji jing","ab":"jj","d":"承转「经」字族：立即经／已经／先前经。","u":"下行文叙述办理经过，与「当经、旋经」同族。","e":"业经呈奉省政府核准","s":"例文乙","n":"","f":"承转语","dir":"下行","py":"jí jīng / yè jīng / qián jīng"},{"t":"嗣奉 / 嗣经 / 复经","p":"si feng","ab":"sf","d":"后来奉到／后来经过／又经过。","u":"续叙办理时序，表示前事之后又发生的事。","e":"嗣奉钧厅训令开……","s":"通用","n":"","f":"承转语","dir":"通用","py":"sì fèng / sì jīng / fù jīng"},{"t":"兹奉 / 兹据","p":"zi feng","ab":"zf","d":"现在奉到／现在据到。","u":"引出当前这件来文，衔接往事。","e":"兹据该县覆称……","s":"通用","n":"","f":"引叙语","dir":"通用","py":"zī fèng / zī jù"},{"t":"合行 / 合再 / 合将","p":"he xing","ab":"hx","d":"「合」＝理合、应当；合行＝理合行文，合再＝再次行文，合将＝将某文件发出。","u":"引出本机关的行文动作，发文的标志词。","e":"合行令仰该县即便遵照；合行布告","s":"例文乙·丁","n":"","f":"结束语","dir":"下行","py":"hé xíng / hé zài / hé jiāng"},{"t":"除……外","p":"chu wai","ab":"cw","d":"关顾语的特例：关联本文以外的行为，先交代附带处理的事项。","u":"主句之前先交代附带处理的事项。","e":"除分令各厅外，仰该县即便遵照……","s":"通用","n":"有人单列为「除外语」，其实是关顾语的特例，功能是关联本文以外的行为。","f":"关顾语","dir":"通用","py":"chú……wài"},{"t":"准此","p":"zhun ci","ab":"zc","d":"接到此（平行来文）。对应「奉此」：上行敬称「奉」，平行用「准」。","u":"平行文引叙来文之后转入自叙的承转语。","e":"……等由。准此：查此项工程……","s":"例文丙","n":"奉此（对上级）／准此（对平行）／据此（据来文），一字见尊卑。","f":"承转语","dir":"平行","py":"zhǔn cǐ"},{"t":"据此","p":"ju ci","ab":"jc2","d":"根据此（来文）。","u":"承转语，引据来文之后转入自叙，多用于下行文。","e":"……等情。据此：查该县所报……","s":"通用","n":"","f":"承转语","dir":"下行","py":"jù cǐ"},{"t":"各等因 / 各等情","p":"ge deng yin","ab":"gdy","d":"来文所述不止一事时的总结语（「各」＝诸事）。","u":"引述内容含多项事项时用。","e":"……各等因。奉此……","s":"通用","n":"","f":"关界语","dir":"通用","py":"gè děng yīn / gè děng qíng"},{"t":"内开 / 咨开 / 节开 / 略开","p":"nei kai","ab":"nk","d":"引叙来文四式：内开、咨开为照抄原文；节开、略开为节录、简述。","u":"长文引述时标明是全录还是摘录。","e":"……内开：……；……略开：……","s":"通用","n":"","f":"引叙语","dir":"通用","py":"nèi kāi / zī kāi / jié kāi / lüè kāi"},{"t":"呈称 / 声称 / 查得","p":"cheng cheng","ab":"cc","d":"引叙下级或第三方陈述的动词：呈文说／声称／查得。","u":"引出下级或第三方陈述的具体内容。","e":"据该县呈称灾情奇重……","s":"例文乙","n":"","f":"引叙语","dir":"下行","py":"chéng chēng / shēng chēng / chá dé"},{"t":"据呈前情 / 兹据前情","p":"ju cheng qian qing","ab":"jcqq","d":"关顾语，回指前文所述情由。","u":"文书后段回顾前文，避免重复叙述。","e":"兹据前情，查核尚属实在","s":"通用","n":"","f":"关顾语","dir":"通用","py":"jù chéng qián qíng / zī jù qián qíng"},{"t":"理合","p":"li he","ab":"lh","d":"结束语：按理应当。用于归结处引出呈请、呈复。","u":"公文末段收束全篇，转入正式呈请。","e":"理合具文呈请，仰祈鉴核示遵","s":"例文甲","n":"常与「相应」「为此」并列，是全文「合」的部分。","f":"结束语","dir":"上行","py":"lǐ hé"},{"t":"相应 / 为此","p":"xiang ying","ab":"xy","d":"结束语：相应（多用于平行、下行）／为此（引出结论）。","u":"归结全篇、引出最后请求或结论。","e":"相应咨请贵县查照办理","s":"例文丙","n":"","f":"结束语","dir":"通用","py":"xiāng yìng / wèi cǐ"},{"t":"仰","p":"yang","ab":"y","d":"上级对下级的祈使，「希望你（们）」。","u":"下行文核心套语，令、批、布告中指示下级或民众遵办。","e":"仰该县即便遵照","s":"例文乙","n":"「仰」用于下行；上行用「仰祈」「请祈」，形近义异。","f":"祈请语 / 督饬语","dir":"下行","py":"yǎng"},{"t":"仰即","p":"yang ji","ab":"yj","d":"希望立即……","u":"下行文结尾，要求受文者即时照办。","e":"仰即遵照","s":"例文乙","n":"","f":"祈请语 / 督饬语","dir":"下行","py":"yǎng jí"},{"t":"仰祈","p":"yang qi","ab":"yq","d":"上行祈请语，「仰」为仰望、企盼，与下行命令之「仰」同形异义。","u":"上行文结尾，如「仰祈鉴核」，与下行「仰」同形异义。","e":"仰祈鉴核示遵","s":"例文甲","n":"实务中亦作「请祈」，如「请祈鉴核备案」。","f":"祈请语 / 督饬语","dir":"上行","py":"yǎng qí"},{"t":"饬 / 令饬 / 应饬","p":"chi","ab":"c2","d":"命令、责成办理。","u":"上级对下级布置任务、责成查办。","e":"饬即查明灾情具报","s":"例文甲","n":"","f":"祈请语 / 督饬语","dir":"下行","py":"chì / lìng chì / yīng chì"},{"t":"切切","p":"qie qie","ab":"qq","d":"谆谆告诫，语气最重的催促。","u":"多于令、布告结尾叠用，强调务必照办。","e":"切切此令；切切此布","s":"例文乙·丁","n":"「切切此令」「切切此布」是固定收尾格式。","f":"祈请语 / 督饬语","dir":"下行","py":"qiè qiè"},{"t":"切速勿延 / 毋得违延","p":"qie su wu yan","ab":"qswy","d":"务必迅速，不得拖延。","u":"催办类令文的收尾催促语。","e":"毋得违延，切速勿延","s":"通用","n":"","f":"祈请语 / 督饬语","dir":"下行","py":"qiè sù wù yán / wú dé wéi yán"},{"t":"勿再宕延 / 勿再延宕","p":"wu zai dang yan","ab":"wzdy","d":"不要再拖延。","u":"对多次催办未复的下级所用，带责备意味。","e":"勿再宕延，切切此令","s":"通用","n":"","f":"祈请语 / 督饬语","dir":"下行","py":"wù zài dàng yán / wù zài yán dàng"},{"t":"勿延 / 毋稍 / 毋得","p":"wu yan","ab":"wy","d":"督饬语：不要拖延／不要稍有（疏懈）／不得。","u":"下行文结尾再加叮咛。","e":"毋得稍涉浮冒","s":"例文乙","n":"","f":"祈请语 / 督饬语","dir":"下行","py":"wù yán / wú shāo / wú dé"},{"t":"即便 / 迅即 / 迅速 / 确速 / 详确","p":"ji bian","ab":"jb","d":"催促性副词群：立即／迅速／确实迅速／详细确实。","u":"密集出现于催办令、批文，体现上级急于结案。","e":"即便遵照；迅将赈款具领；迅即查明","s":"例文乙","n":"","f":"祈请语 / 督饬语","dir":"下行","py":"jí biàn / xùn jí / xùn sù / què sù / xiáng què"},{"t":"致于未便","p":"zhi yu wei bian","ab":"zywb","d":"否则将有所不便（隐含后果警告）。","u":"下行文警告拖延、违令的后果，语气较严厉。","e":"毋得稍涉浮冒，致干未便","s":"例文乙","n":"","f":"祈请语 / 督饬语","dir":"下行","py":"zhì yú wèi biàn"},{"t":"有厚望焉 / 致干 / 定予","p":"you hou wang yan","ab":"yhw","d":"下行结尾督饬：寄予厚望／否则招致（处分）／一定给予（惩处）。","u":"领导话讲完后的叮咛，等于「别把事情办坏了」。","e":"致干未便；定予惩处","s":"例文乙","n":"","f":"祈请语 / 督饬语","dir":"下行","py":"yǒu hòu wàng yān / zhì gàn / dìng yǔ"},{"t":"悬案以待","p":"xuan an yi dai","ab":"xayd","d":"把案件悬置起来等待办理结果。","u":"催办令中说明案件已搁置待复，施加压力。","e":"悬案以待，勿再延宕","s":"通用","n":"","f":"祈请语 / 督饬语","dir":"下行","py":"xuán àn yǐ dài"},{"t":"遵照 / 遵照办理","p":"zun zhao","ab":"zz","d":"依照（命令）办理。","u":"下行文结尾要求受文者依令执行。","e":"即便遵照；仰即遵照","s":"例文乙","n":"","f":"祈请语 / 督饬语","dir":"下行","py":"zūn zhào / zūn zhào bàn lǐ"},{"t":"姑 / 暂","p":"gu zan","ab":"gz","d":"准驳语中语气最弱者：姑且、暂时同意。","u":"上级别无良法时勉强应允——「先这么办吧」，下级须体会其保留。","e":"姑准所请；暂如所议","s":"通用","n":"准驳强弱：准＞可＞姑、暂＞未便＞碍难＞万难＞不准。","f":"准驳语","dir":"下行","py":"gū / zàn"},{"t":"状悉 / 呈悉 / 各呈均悉","p":"zhuang xi","ab":"zx","d":"阅悉来文（状＝状纸，呈＝呈文，各呈＝多件呈文）。","u":"批文开头的第一句，表示来文已收到并看过。","e":"呈悉：查该县所请……","s":"通用","n":"","f":"起首语","dir":"下行","py":"zhuàng xī / chéng xī / gè chéng jūn xī"},{"t":"查 / 复查","p":"cha","ab":"ch","d":"审查、复核。","u":"批文中引出调查、核实结论。","e":"当经本厅复核属实","s":"例文乙","n":"","f":"引叙语","dir":"下行","py":"chá / fù chá"},{"t":"应准","p":"ying zhun","ab":"yz","d":"应当批准。","u":"批文裁断用语，表示同意来请。","e":"应准如所请","s":"通用","n":"","f":"准驳语","dir":"下行","py":"yīng zhǔn"},{"t":"可","p":"ke","ab":"k2","d":"准驳语：同意。","u":"批文简断用语，一字表示许可。","e":"所请可也","s":"通用","n":"","f":"准驳语","dir":"下行","py":"kě"},{"t":"如呈照准","p":"ru cheng zhao zhun","ab":"rczz","d":"照来呈所请予以批准。","u":"批文表示依呈文请求办理。","e":"所请如呈照准","s":"通用","n":"","f":"准驳语","dir":"下行","py":"rú chéng zhào zhǔn"},{"t":"未便照准","p":"wei bian zhao zhun","ab":"wbzz","d":"不便批准（较委婉的否定）。","u":"批文否定来请，语气比「应不准行」缓和。","e":"所请未便照准","s":"通用","n":"","f":"准驳语","dir":"下行","py":"wèi biàn zhào zhǔn"},{"t":"未便","p":"wei bian","ab":"wb","d":"介于同意与不同意之间：有所顾虑、不完全同意。","u":"上级留有余地的表态，下级须掂量，不可当作已准。","e":"事属可行，惟于定章未便","s":"通用","n":"字面是肯定，实际表达保留——民国公文最耐人寻味的一词。","f":"准驳语","dir":"下行","py":"wèi biàn"},{"t":"碍难照准","p":"ai nan zhao zhun","ab":"anzz","d":"碍于情势难以批准（委婉否定）。","u":"批文否决请求时的客气说法。","e":"所请碍难照准","s":"通用","n":"","f":"准驳语","dir":"下行","py":"ài nán zhào zhǔn"},{"t":"万难照准","p":"wan nan zhao zhun","ab":"wnzz","d":"万难批准（比「碍难」更重的否定）。","u":"语气强烈的否决。","e":"所请万难照准","s":"通用","n":"","f":"准驳语","dir":"下行","py":"wàn nán zhào zhǔn"},{"t":"应不准行","p":"ying bu zhun xing","ab":"ybzx","d":"应当不予准行（明确否定）。","u":"批文对无理请求的否定裁断，语气坚决。","e":"所呈显系误会，应不准行","s":"通用","n":"","f":"准驳语","dir":"下行","py":"yīng bù zhǔn xíng"},{"t":"不合 / 非是","p":"bu he","ab":"bh","d":"否定评断：不合（规定）／非是（不对）。","u":"批文驳斥来呈时的评断语。","e":"所请于法不合；所论非是","s":"通用","n":"","f":"准驳语","dir":"下行","py":"bù hé / fēi shì"},{"t":"应毋庸议","p":"ying wu yong yi","ab":"ywyy","d":"不必再提，即「不行」。","u":"批文常用否定语，比「不准」更断然。","e":"所请应毋庸议","s":"通用","n":"","f":"准驳语","dir":"下行","py":"yīng wú yōng yì"},{"t":"殊涉含糊 / 殊属玩延","p":"shu she han hu","ab":"sshh","d":"实在涉于含糊／实在属于玩忽拖延。","u":"对下级来文或办理态度的批评定性。","e":"来呈声叙不清，殊涉含糊","s":"通用","n":"","f":"准驳语","dir":"下行","py":"shū shè hán hú / shū shǔ wán yán"},{"t":"显系……（饰词狡赖/误会）","p":"xian xi","ab":"xx","d":"显然属于……，给行为定性。","u":"批文驳斥来呈时的定性用语。","e":"所呈显系误会","s":"通用","n":"","f":"准驳语","dir":"下行","py":"xiǎn xì……（shì cí jiǎo lài/wù huì）"},{"t":"各执一词 / 莫衷一是","p":"ge zhi yi ci","ab":"gzyc","d":"双方各说各话、互相争执，无法得出一致结论。","u":"叙述两造争讼、供词不一时用。","e":"两造各执一词，莫衷一是","s":"通用","n":"","f":"引叙语","dir":"通用","py":"gè zhí yī cí / mò zhōng yī shì"},{"t":"即希 / 查照","p":"ji xi","ab":"jx","d":"平行祈请：十分希望／查明照办。","u":"平行文结尾请求对方办理。","e":"即希查照","s":"例文丙","n":"","f":"祈请语 / 督饬语","dir":"平行","py":"jí xī / chá zhào"},{"t":"烦请 / 赐复 / 见复","p":"fan qing","ab":"fq","d":"平行祈请：麻烦您／请回复（「赐复」敬，「见复」谦）。","u":"平行文请求答复的客气说法。","e":"即希查照赐复","s":"例文丙","n":"","f":"祈请语 / 督饬语","dir":"平行","py":"fán qǐng / cì fù / jiàn fù"},{"t":"为盼 / 为荷 / 实纫公谊 / 是所至盼","p":"wei pan","ab":"wp","d":"平行结尾客气套语：是所盼望／承情之至／深感厚谊／最为盼望。","u":"平行文收尾的客套，属「补助语」性质。","e":"即希查照赐复为荷","s":"例文丙","n":"","f":"补助语","dir":"平行","py":"wèi pàn / wèi hè / shí rèn gōng yì / shì suǒ zhì pàn"},{"t":"仰祈鉴核（施行/示遵/备案）","p":"yang qi jian he","ab":"yqjh","d":"上行结尾祈请：请审察核定；接施行（请核准实施）／示遵（请给指示）／备案（备查）。","u":"呈文末尾，按请示内容选用不同尾缀。","e":"仰祈鉴核示遵","s":"例文甲","n":"","f":"祈请语 / 督饬语","dir":"上行","py":"yǎng qí jiàn hé（shī xíng/shì zūn/bèi àn）"},{"t":"批示祗遵 / 指令示遵","p":"pi shi zhi zun","ab":"pszz","d":"请求给予指示以便遵行（祗遵＝敬谨遵守）。","u":"上行文结尾，把决定权交回上级。","e":"仰祈鉴核示遵；请祈指令示遵","s":"例文甲","n":"","f":"祈请语 / 督饬语","dir":"上行","py":"pī shì zhī zūn / zhǐ lìng shì zūn"},{"t":"此令 / 此批 / 此布","p":"ci ling","ab":"cl","d":"令／批／布告的结尾收束语。","u":"必须与文种严格对应，不能混用。","e":"此令（令）；此批（批）；此布（布告）","s":"例文乙·丁","n":"判断文种最直接的标志：见此令即令，见此批即批。","f":"结束语","dir":"下行","py":"cǐ lìng / cǐ pī / cǐ bù"},{"t":"此咨 / 此致","p":"ci zi","ab":"cz","d":"咨的结尾作「此咨」，公函的结尾作「此致」。","u":"平行文的收束语，与下行「此令」、上行「谨呈」相对。","e":"……以便会同兴工。此咨。；……为荷。此致。","s":"例文丙","n":"今书信「此致」即源于公函结尾。","f":"结束语","dir":"平行","py":"cǐ zī / cǐ zhì"},{"t":"谨呈","p":"jin cheng","ab":"jc","d":"恭谨地呈上，上行文结尾敬语。","u":"呈文的最后两字，与下行「此令」相对。","e":"仰祈鉴核示遵。谨呈。","s":"例文甲","n":"","f":"结束语","dir":"上行","py":"jǐn chéng"},{"t":"请祈 / 鉴核 / 备案 / 指令示遵","p":"qing qi","ab":"qq2","d":"上行结尾祈请语群：请求审察核定、备案、给予指示以便遵行。","u":"呈文末尾，体现上下尊卑与请示关系。","e":"请祈鉴核备案，并祈指令示遵","s":"通用","n":"","f":"祈请语 / 督饬语","dir":"上行","py":"qǐng qí / jiàn hé / bèi àn / zhǐ lìng shì zūn"},{"t":"计发 / 计抄发","p":"ji fa","ab":"jf","d":"附件说明：随文附发／抄发若干。","u":"公文末尾交代随文所附文件、清单、图册。","e":"计抄发赈款分配清册一件","s":"例文乙","n":"","f":"补助语","dir":"下行","py":"jì fā / jì chāo fā"},{"t":"具报 / 具复","p":"ju bao","ab":"jb2","d":"上报／回复上级。","u":"下行文中要求下级回报办理结果。","e":"造册具报；仰即具复","s":"例文乙","n":"","f":"祈请语 / 督饬语","dir":"下行","py":"jù bào / jù fù"},{"t":"是否有当","p":"shi fou you dang","ab":"sfyd","d":"是否妥当（谦辞，征求上级裁酌）。","u":"上行文提出方案后的客套，把决定权留给上级。","e":"是否有当，理合具文呈请","s":"例文甲","n":"","f":"补助语","dir":"上行","py":"shì fǒu yǒu dàng"},{"t":"伏乞 / 伏祈","p":"fu qi","ab":"fq2","d":"俯伏乞求，旧式上行极谦之辞。","u":"清代至民初上行文中的旧套语，民国后渐被弃用，档案中仍有残留。","e":"伏乞恩准（旧式残留）","s":"通用","n":"孙中山主张废除「伏乞恩准」「实为恩便」等官僚口吻，但惯性难尽除。","f":"祈请语 / 督饬语","dir":"上行","py":"fú qǐ / fú qí"},{"t":"钧（钧部/钧府/钧座）","p":"jun","ab":"j","d":"下级对上级的尊称，用于称呼对方，如「钧部」「钧府」「钧座」。","u":"下级对上级行文时称对方，如「钧厅」「钧部」「钧座」。","e":"案奉钧厅训令开","s":"例文甲","n":"「钧」表尊重，只用于上行；下行称「该」，平行称「贵」。","f":"称谓语","dir":"上行","py":"jūn（jūn bù/jūn fǔ/jūn zuò）"},{"t":"大（大署）","p":"da","ab":"d2","d":"对非直辖上级机关的尊称，如「大署」。","u":"向非本系统直辖的上级机关行文。","e":"呈大署","s":"通用","n":"","f":"称谓语","dir":"上行","py":"dà（dà shǔ）"},{"t":"职（职部/职县/职○○）","p":"zhi","ab":"z2","d":"下级自称，后接机构或人名，如「职部」「职县」。","u":"上行文自称本机关或本人，如「职县」「职所」「职○○」。","e":"查职县受灾田亩共三千余亩","s":"例文甲","n":"属下对上自称，与下行「本」、平行「敝」相对。","f":"称谓语","dir":"上行","py":"zhí（zhí bù/zhí xiàn/zhí○○）"},{"t":"敝","p":"bi","ab":"b","d":"平行文谦称己方，如「敝署」「敝会」。","u":"同级、不相隶属机关称自己一方，如「敝署」「敝会」。","e":"敝会","s":"通用","n":"","f":"称谓语","dir":"平行","py":"bì"},{"t":"本","p":"ben","ab":"b2","d":"下行、平行文自称本机关，如「本厅」「本县」。","u":"称本机关，如「本厅」「本部」「本县」。","e":"当经本厅复核属实","s":"例文乙","n":"","f":"称谓语","dir":"通用","py":"běn"},{"t":"该","p":"gai","ab":"g","d":"下行文称收文的下级机关，如「该县」「该部」。","u":"上级对下级行文时指称对方，如「该县」「该部」。","e":"仰该县即便遵照","s":"例文乙","n":"「该」带上下尊卑色彩，只用于下行。","f":"称谓语","dir":"下行","py":"gāi"},{"t":"贵","p":"gui","ab":"g2","d":"平行文敬称对方，如「贵县」「贵署」。","u":"同级、不相隶属机关称对方，如「贵县」「贵署」。","e":"案准贵县咨开","s":"例文丙","n":"","f":"称谓语","dir":"平行","py":"guì"}];
+if (!window.__DATA_B64) document.write('<script src="data.js"><\/script>');
+</script>
+<script src="https://cdn.jsdelivr.net/gh/kanshin999/yitizi-dict@main/glyphs.js" defer></script>
+<script>
+if (!window.YTZ_GLYPHS) document.write('<script src="glyphs.js" defer><\/script>');
+</script>
+<script>
+(function(){
+  "use strict";
+  var _jc = document.getElementById('jscheck');
+  if (_jc) _jc.parentNode.removeChild(_jc);
+  function boot(DATA){
+  DATA.IDS = { s: DATA.idsS, i: DATA.idsI };
+  DATA.KX = DATA.kx;
+  var CH = DATA.chars, S2T = DATA.s2t, T2S = DATA.t2s, BELONG = DATA.belong || {};
+  var THEMES = {
+    paper:{bg:'#faf7f0',card:'#fffdf8',ink:'#241f1a',red:'#a8322a',line:'#e7ddcc',box:'#f6f1e7',mut:'#97876f',dim:'#c9bda8',noise:'.05',shadow:'rgba(90,70,40,.08)'},
+    rubbing:{bg:'#1a1a18',card:'#222220',ink:'#e8e3d8',red:'#c9a227',line:'#37372f',box:'#2a2a26',mut:'#8b8678',dim:'#5f5a4d',noise:'.09',shadow:'rgba(0,0,0,.4)'}
+  };
+  var MODE = 'paper';
+  var $ = function(s){return document.querySelector(s)};
+  var card = $('#card'), input = $('#q'), hint = $('#hint');
+  var path = [];   // 查阅路径
 
-const DIRCLS = {"上行":"up","平行":"par","下行":"down","通用":"allc"};
-const FUNC_ORDER = ["称谓语","起首语","引叙语","关界语","到达语","承转语","经过语","关顾语","准驳语","祈请语 / 督饬语","结束语","补助语"];
-const SECS = [
-  {k:"fangfa", n:"识读方法", d:"三大类 · 四步判读", n2:4},
-  {k:"wenlei", n:"公文类别", d:"民国常用文种与行文方向", n2:12},
-  {k:"yongyu", n:"公文用语", d:"十二类功能用语及其用法", n2:ITEMS.length},
-  {k:"dirs",   n:"上行 · 平行 · 下行惯用辞令", d:"按行文方向对照查阅（含通用）", n2:ITEMS.length},
-  {k:"lifa",   n:"通用例文", d:"四篇综合范例 + 十二文种示例", n2:16},
-  {k:"fagui",  n:"《公文程式》历次规则原文", d:"1912—1928 五版法规原文", n2:5}
-];
-
-const WENLEI = [
-  ["令","任免官吏、公布法规，或有所指挥时用。","下行"],
-  ["训令","上级主动向下级机关布置工作。","下行"],
-  ["指令","因下级机关呈请而发令，对呈请事项作指示，相当于批复。","下行"],
-  ["布告","对公众宣布事项、告知政府决议，客体为广大民众。","下行"],
-  ["任命状","任命官吏。分特任、简任、荐任、委任，官等、选任资格与程序各异；简任以下多须考试或资历。","下行"],
-  ["呈","上行主文种，兼请示与报告；分呈请、呈报、呈复，略如请求建议、申报事项、回复上级。","上行"],
-  ["签呈","内部使用，属员签拟意见，由长官核夺。","上行"],
-  ["咨","同一系统内平级机关往来；分咨请、咨复、咨行。","平行"],
-  ["公函","不相隶属机关之间往来；分函请、函复。1942 年与咨合并，统称「函」。","平行"],
-  ["笺函","又称常函，同级机关平常事件往来的非正式公函。","平行"],
-  ["批","各机关对民众陈情事项的回复。","下行"],
-  ["电 / 代电","电报传递迅速，战时或突发常用；电不通处以快邮代电、航空代电代之。电文以韵母代日、地支代月省字。","通用"]
-];
-
-const STEP_INTRO = "公文只有上行、下行、平行三大类；结构上分叙由、依据、申述、归结（即起、承、转、合）四段。读一篇档案，按下面四步走。";
-const STEPS = [
- {no:"第一步",t:"判行文方向",items:[
-   ["看称谓",["钧、职 → 上行","贵、敝 → 平行","该、本 → 下行"]],
-   ["看引叙",["奉 → 上级来文","准 → 平行来文","据 → 下级来文"]],
-   ["看结尾",["谨呈、请祈 → 上行","此咨、此致、为荷 → 平行","此令、此批、此布 → 下行"]]
- ]},
- {no:"第二步",t:"拆四段结构",items:[
-   ["叙由（起）","为什么发这篇文"],
-   ["依据（承）","凭什么——法令、前案、来文"],
-   ["申述（转）","怎么办——意见与办法"],
-   ["归结（合）","请什么——请示、照办、备案"]
- ]},
- {no:"第三步",t:"认套语链条",items:[
-   ["等因","引上级来文到此为止"],
-   ["奉此","接到此令，转入自叙"],
-   ["等情","引下级呈状到此为止"],
-   ["各在案","旧卷可稽，坐实依据"]
- ]},
- {no:"第四步",t:"断文种",items:[
-   ["「为…事」＋「此令」","令"],
-   ["「呈为…事」＋「谨呈」","呈"],
-   ["「呈悉 / 状悉」＋「此批」","批"],
-   ["「为布告事 / 照得」＋「此布」","布告"],
-   ["「径启者」＋「此致」","公函"]
- ]}
-];
-
-const cardsEl=document.getElementById("cards"), homeEl=document.getElementById("home"),
-      detailEl=document.getElementById("detail"), resultsEl=document.getElementById("results"),
-      qEl=document.getElementById("q");
-
-function dirTag(d){return d?`<span class="tag ${DIRCLS[d]||'allc'}">${d}</span>`:"";}
-
-cardsEl.innerHTML = SECS.map((s,i)=>{
-  const n = s.n2!=null ? s.n2 : (s.k==="yongyu" ? ITEMS.length : ITEMS.filter(x=>x.dir===({up:"上行",par:"平行",down:"下行"}[s.k])).length);
-  return `<button class="card" data-k="${s.k}">
-    <div class="no">0${i+1}</div><div class="t">${s.n}</div>
-    <div class="d">${s.d}</div><div class="n">${typeof s.n2==="string" ? s.n2 : n+" 条"}</div></button>`;
-}).join("");
-
-function entry(it, showFunc){
-  const badge = showFunc ? `<span class="src-tag">${it.f}</span>` : dirTag(it.dir);
-  return `<div class="item">
-    <div class="it-h"><span class="it-t">${it.t}</span><span class="it-p">${it.py||it.p||""}</span>${badge}</div>
-    <div>
-      <div class="it-d">${it.d}</div>
-      <div class="meta"><span class="k">用在</span>${it.u}</div>
-      <div class="meta"><span class="k">例</span><span class="eg">${it.e}</span></div>
-      <div class="meta"><span class="k">出处</span>${it.s}${it.n?` · <span class="nu">辨析：${it.n}</span>`:""}</div>
-    </div>
-  </div>`;
-}
-function listByGroup(items, groupFn){
-  const groups=[...new Set(items.map(groupFn))];
-  return groups.map(g=>{
-    const rs=items.filter(x=>groupFn(x)===g);
-    return `<div class="sub">${g}<small>${rs.length}</small></div>`+rs.map(x=>entry(x)).join("");
-  }).join("");
-}
-
-function showHome(){homeEl.style.display="block";detailEl.classList.remove("show");resultsEl.classList.remove("show");document.getElementById("subtabs").style.display="none";}
-
-function staticHTML(k){
-  if(k==="wenlei"){
-    return `<table class="tb-wenlei"><tr><th>文种 / 方向</th><th>用途</th></tr>`+
-      WENLEI.map(r=>`<tr><td class="t">${r[0]}${dirTag(r[2])}</td><td class="use">${r[1]}</td></tr>`).join("")+`</table>`;
+  /* ---------- 字形可用性检测 ---------- */
+  var _cv = document.createElement('canvas'); _cv.width = _cv.height = 48;
+  var _cx = _cv.getContext('2d', {willReadFrequently:true});
+  var FONT = getComputedStyle(document.body).fontFamily;
+  if (!FONT || FONT.indexOf('px') >= 0) FONT = '"Songti SC",serif';
+  function bitmap(ch){
+    _cx.clearRect(0,0,48,48);
+    _cx.font = '36px ' + FONT;
+    _cx.textBaseline = 'top'; _cx.fillStyle = '#000';
+    _cx.fillText(ch, 0, 0);
+    var d = _cx.getImageData(0,0,48,48).data, s = 0;
+    for (var i=3;i<d.length;i+=4) s = s*31 + d[i];
+    return s;
   }
-  if(k==="fangfa"){
-    return `<div class="meth"><p>${STEP_INTRO}</p>
-      <div class="chain"><b>三大类：</b>上行（对上级）· 平行（同级 / 不相隶属）· 下行（对下级、对民众）</div>
-      <div class="steps">`+STEPS.map((s,i)=>`<details class="step">
-        <summary><span class="no">${s.no}</span><span class="st">${s.t}</span><span class="arw">›</span></summary>
-        <ul>`+s.items.map(function(it){
-          if(Array.isArray(it[1])){
-            return `<li><b>${it[0]}</b>`+it[1].map(function(x){return `<span class="sl">${x}</span>`;}).join("")+`</li>`;
+  var ND = bitmap('\uFFFF'), TEST = bitmap('一'), DETECT = (ND !== TEST);
+  function drawable(ch){
+    var o = ch.codePointAt(0);
+    if (o >= 0xE000 && o <= 0xF8FF) return false;
+    if (o >= 0xF0000) return false;
+    if (!DETECT) return true;
+    return bitmap(ch) !== ND;
+  }
+
+  /* ---------- 字形包（1-bit 位图）---------- */
+  var GB = null, GN = 0, GWH = 8, GOFF = 8, GDATA = 8, gcache = {};
+  function hex2rgb(h){
+    h = (h || '#241f1a').replace('#','');
+    if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+    return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+  }
+  function initGlyphPack(tries){
+    tries = tries || 0;
+    if (!window.DecompressionStream) return;
+    if (!window.YTZ_GLYPHS){
+      if (tries < 100) setTimeout(function(){ initGlyphPack(tries + 1); }, 200);
+      return;
+    }
+    var s = atob(window.YTZ_GLYPHS), u = new Uint8Array(s.length);
+    for (var i=0;i<s.length;i++) u[i] = s.charCodeAt(i);
+    var ds = new DecompressionStream('gzip');
+    new Response(new Blob([u]).stream().pipeThrough(ds)).arrayBuffer().then(function(buf){
+      GB = new Uint8Array(buf);
+      var dv = new DataView(buf);
+      GN = dv.getUint32(4, true);
+      GWH = 8; GOFF = 8 + GN*2; GDATA = GOFF + GN*4;
+      gcache = {};
+      if (path.length) render(path[path.length-1]);
+    }).catch(function(){ GB = null; });
+  }
+  function glyphURL(idx){
+    var ink = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#241f1a';
+    var key = idx + '|' + ink;
+    if (gcache[key]) return gcache[key];
+    var dv = new DataView(GB.buffer);
+    var w = GB[GWH+idx*2], h = GB[GWH+idx*2+1];
+    if (!w || !h) return '';
+    var off = dv.getUint32(GOFF+idx*4, true), pitch = (w+7)>>3;
+    var cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+    var cx = cv.getContext('2d'), im = cx.createImageData(w, h), rgb = hex2rgb(ink);
+    for (var y=0;y<h;y++){
+      for (var x=0;x<w;x++){
+        if (GB[GDATA+off+y*pitch+(x>>3)] & (0x80>>(x&7))){
+          var p = (y*w+x)*4;
+          im.data[p]=rgb[0]; im.data[p+1]=rgb[1]; im.data[p+2]=rgb[2]; im.data[p+3]=255;
+        }
+      }
+    }
+    cx.putImageData(im, 0, 0);
+    var url = cv.toDataURL('image/png');
+    gcache[key] = url;
+    return url;
+  }
+
+  /* ---------- 查询归一 ---------- */
+  function candidates(ch){
+    var out = [ch];
+    if (S2T[ch]) S2T[ch].split('').forEach(function(x){ if(out.indexOf(x)<0) out.push(x); });
+    if (T2S[ch]) T2S[ch].split('').forEach(function(x){ if(out.indexOf(x)<0) out.push(x); });
+    return out;
+  }
+  function moeCount(d){
+    var n = 0, vs = d.v || [];
+    for (var i=0;i<vs.length;i++) if (/^[ABCN]\d/.test(vs[i][1] || '')) n++;
+    return n;
+  }
+  function resolve(ch){
+    var cs = candidates(ch), best = null, score = -1;
+    for (var i=0;i<cs.length;i++){
+      var d = CH[cs[i]];
+      if (!d) continue;
+      var sc = moeCount(d) * 100 + (d.v || []).length;
+      if (sc > score){ score = sc; best = cs[i]; }
+    }
+    return best;
+  }
+
+  /* ---------- 渲染 ---------- */
+  function esc(s){ return String(s||'').replace(/[&<>"]/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+  function trail(){
+    if (path.length < 2) return '';
+    var cur = path[path.length-1], prev = [];
+    for (var i = path.length - 2; i >= 0 && prev.length < 10; i--){
+      var c = path[i];
+      if (c !== cur && prev.indexOf(c) < 0) prev.push(c);
+    }
+    if (!prev.length) return '';
+    return '<div class="sect" style="margin-top:26px"><h3>历 史 查 询</h3>'
+      + '<span class="n">'+prev.length+' 字</span><span class="ln"></span></div>'
+      + '<div class="rel">' + prev.map(function(x){
+          return '<button class="chip" data-ch="'+esc(x)+'">'+esc(x)+'</button>';
+        }).join('') + '</div>';
+  }
+
+  var fntMode = '';
+  function glyphCell(ch, code, rad, kind, idx){
+    if ((!ch || !drawable(ch)) ){
+      if (GB && idx != null && idx >= 0){
+        var u = glyphURL(idx);
+        if (u) return '<div class="vg bit" data-idx="'+idx+'" title="'+esc(code||'')+'　字形图">'
+          + '<img src="'+u+'" alt="" style="width:34px;height:auto;image-rendering:auto">'
+          + '<span class="gl">'+esc(code && code.length>3 ? '' : (code||''))+'</span></div>';
+      }
+      return null;
+    }
+    var tag = '', src = '漢', note = '';
+    if (code === 'UH'){ src = '漢'; note = 'Unihan 异体关系'; }
+    else if (code === 'SW'){ src = '文'; note = '《说文》重文'; }
+    else {
+      src = code;
+      note = '《異體字字典》' + code;
+      if (kind & 1) { tag = '<i class="tag">◎</i>'; note += '　或体'; }
+      if (kind & 2) { tag = '<i class="tag">↗</i>'; note += '　另兼正字'; }
+    }
+    var rc = rad ? rad.split('-') : [];
+    var radTxt = rc.length === 3 ? rc[0] + '·' + rc[2] + '画' : '';
+    var hasZ = CH[ch] && CH[ch].v && CH[ch].v.length ? ' has-z' : '';
+    return '<div class="vg'+hasZ+'" data-ch="'+esc(ch)+'" title="'+esc(note)+'">'
+      + tag + '<span class="g">'+esc(ch)+'</span>'
+      + '<span class="gl">'+esc(src)+'</span>'
+      + '<span class="rad">'+esc(radTxt)+'</span></div>';
+  }
+
+  function render(ch){
+    var k = resolve(ch);
+    if (!k){
+      var owner = (BELONG[ch] || '').split('').filter(function(x){ return CH[x] });
+      if (owner.length){
+        card.innerHTML = '<div class="card">'
+          + '<div class="head"><div class="zi">'+esc(ch)+'</div><div class="meta">'
+          + '<div class="row"><label>性　质</label><span>异体字形，本身非正字</span></div>'
+          + '<div class="row"><label>所　属</label><span>'+owner.map(function(x){return '「'+esc(x)+'」'}).join('')+' 的异体</span></div>'
+          + '<span class="badge">'+owner.length+' 个正字共用</span></div></div>'
+          + '<div class="sect"><h3>回到正字</h3><span class="ln"></span></div>'
+          + '<div class="rel">'+owner.map(function(x){return '<button class="chip" data-ch="'+esc(x)+'">'+esc(x)+'</button>'}).join('')+'</div>'
+          + '</div>';
+        hint.textContent = '它是别人的分身，点正字看全貌';
+        return true;
+      }
+      card.innerHTML = '<div class="card"><div class="empty">「'+esc(ch)+'」<br>未收入异体字表<br><span style="font-size:11.5px">《異體字字典》以台湾标准字体为正字，可换个写法试试</span></div></div>';
+      hint.textContent = '';
+      return false;
+    }
+    var d = CH[k] || {};
+    var vs = (d.v || []).slice();
+    var drawn = [], lost = [];
+    var relTr = (d.tr && d.tr !== k) ? d.tr : '', relSr = (d.sr && d.sr !== k) ? d.sr : '';
+    var relN = 0;
+    if (relSr && relSr.length === 1 && drawable(relSr))
+      drawn.push('<div class="vg rel-v" data-ch="'+esc(relSr)+'" title="繁体写法"><span class="g">'+esc(relSr)+'</span><span class="gl">繁</span></div>'), relN++;
+    if (relTr && relTr.length === 1 && drawable(relTr))
+      drawn.push('<div class="vg rel-v" data-ch="'+esc(relTr)+'" title="简体写法"><span class="g">'+esc(relTr)+'</span><span class="gl">简</span></div>'), relN++;
+    vs.forEach(function(e){
+      var g = glyphCell(e[0], e[1], e[2], e[3], e[4]);
+      if (g) drawn.push(g); else lost.push(e);
+    });
+
+    var rows = '';
+    var tr = d.tr || S2T[k] || '';
+    var sr = d.sr || T2S[k] || '';
+    if (k !== ch) rows += '<div class="row"><label>查　字</label><span>「'+esc(ch)+'」→ 正字「'+esc(k)+'」</span></div>';
+    if (tr) rows += '<div class="row"><label>简　体</label><span>'+esc(tr)+'</span></div>';
+    if (sr) rows += '<div class="row"><label>繁　体</label><span>'+esc(sr)+'</span></div>';
+    var rs = (d.rs || '').split('.');
+    if (rs[0]) rows += '<div class="row"><label>部　首</label><span>'+esc(radName(parseInt(rs[0],10)))+' 部 · 部外 '+(parseInt(rs[1],10)||0)+' 画</span></div>';
+    if (d.st) rows += '<div class="row"><label>总笔画</label><span>'+esc(d.st)+'</span></div>';
+    if (d.py) rows += '<div class="row"><label>读　音</label><span>'+esc(d.py)+'</span></div>';
+    if (d.fq) rows += '<div class="row"><label>反　切</label><span>'+esc(d.fq)+'</span></div>';
+
+    var sw = '';
+    initKX();
+    if (!d.df && KX && KX[k]){
+      var kxTxt = KX[k];
+      var kxLong = kxTxt.length > 120;
+      sw = '<div class="shuowen kx"><span class="lb">康 熙 字 典</span>'
+        + '<div class="txt' + (kxLong ? ' clip' : '') + '">' + esc(kxTxt) + '</div>'
+        + (kxLong ? '<button class="more">展开全文 ▾</button>' : '') + '</div>';
+    } else if (!d.df && !KX){
+      sw = '<div class="shuowen kx"><span class="lb">释 义</span><span style="color:var(--dim);font-size:12px">载入中…</span></div>';
+    } else if (!d.df){
+      sw = '<div class="shuowen kx"><span class="lb">释 义</span><span style="color:var(--dim);font-size:12px">《说文》《康熙》均未收此字</span></div>';
+    }
+    if (d.df){
+      var swLong = d.df.length > 120;
+      sw += '<div class="shuowen"><span class="lb">說 文 解 字</span>'
+        + '<div class="txt' + (swLong ? ' clip' : '') + '">' + esc(d.df) + '</div>'
+        + (swLong ? '<button class="more">展开全文 \u25BE</button>' : '');
+      if (d.zw){
+        buildIndexMap();
+        var zwParts = Array.from(d.zw).map(function(x){
+          var gi = CH2IDX && CH2IDX[x];
+          var wide = x.codePointAt(0) > 0xFFFF;   /* 扩展区字符多数设备缺字，直接用位图 */
+          if (gi != null && GB && (wide || !drawable(x))){
+            var u = glyphURL(gi);
+            if (u) return '<img class="zwi" src="'+u+'" data-ch="'+esc(x)+'" title="'+esc(x)+'">';
           }
-          return `<li><b>${it[0]}</b>：${it[1]}</li>`;
-        }).join("")+`</ul>
-      </details>`).join("")+`</div>
-      <div class="chain"><b>首尾呼应：</b>开头「呈为呈请事」，结尾常作「理合具文呈请，仰祈鉴核示遵」。</div>
-      <div class="chain"><b>电文省字：</b>电报、代电以韵母代日、地支代月，读前须先译出日期。</div></div>`;
-  }
-  if(k==="lifa"){ return document.getElementById("tpl-lifa").innerHTML+document.getElementById("tpl-li12").innerHTML; }
-  if(k==="fagui"){ return document.getElementById("tpl-fagui").innerHTML; }
-  if(k==="shidu"){
-    return `<div class="sd">
-      <p class="hint">粘贴一段公文，系统自动标出套语（红字），点按可看释义，并生成识读报告。原文若无标点，可先点「自动断句」（初步断句，需人工校对）。全部在本地完成，不上传、不消耗流量。</p>
-      <div class="sd-bar">
-        <button class="btn primary" id="sdrun">识读</button>
-        <button class="btn" id="sdclear">清空</button>
-        <span class="sd-pick" id="sdpick">
-          <button class="btn sd-pick-btn" id="sdflbtn" aria-haspopup="listbox" aria-expanded="false">
-            载入示例<i class="car"></i>
-          </button>
-          <div class="pd-menu" id="sdfl" role="listbox" aria-label="示例例文"></div>
-        </span>
-        <span class="sd-exp">
-          <select id="sdfmt" class="sd-sel" aria-label="导出格式">
-            <option value="png">图片 PNG</option>
-            <option value="pdf">PDF</option>
-            <option value="doc">Word</option>
-          </select>
-          <button class="btn" id="sdexport">导出</button>
-        </span>
-        <label class="sd-opt"><input type="checkbox" id="sdone"> 含单字词</label>
-      </div>
-      <div class="sd-compare">
-        <div class="sd-pane">
-          <div class="sd-lab"><span>原文（可编辑）</span></div>
-          <textarea id="sdin" placeholder="在此粘贴公文全文……"></textarea>
-        </div>
-        <div class="sd-pane">
-          <div class="sd-lab"><span>识读结果</span><span id="sdproofbar" class="pd-bar"></span></div>
-          <div id="sdout" class="sd-out"></div>
-        </div>
-      </div>
-      <div class="sd-foot">
-        <div id="sdstat" class="sd-rep"></div>
-      </div>
-    </div>`;
-  }
-  return "";
-}
-
-function showDetail(k){
-  const s=SECS.find(x=>x.k===k) || {n:"公文识读", d:"粘贴一篇公文，自动标红套语、点按看释义，并生成识读报告。"};
-  document.getElementById("dh").textContent=s.n;
-  document.getElementById("dd").textContent=s.d;
-  const sub=document.getElementById("subtabs");
-  const body=document.getElementById("dbody");
-
-  if(k==="yongyu" || k==="dirs"){
-    sub.style.display="flex";
-    let chips, hint;
-    if(k==="yongyu"){
-      chips=FUNC_ORDER.map(f=>{
-        const n=ITEMS.filter(x=>x.f===f).length;
-        return `<button class="chip" data-f="${f}">${f}<b>${n}</b></button>`;
-      }).join("");
-      hint=`共 ${ITEMS.length} 条，按十二类用语分为 ${FUNC_ORDER.length} 小类。请选择上方小类查看（可随时切换）。`;
-    }else{
-      const ds=[["上行","上行文"],["平行","平行文"],["下行","下行文"],["通用","通用（各体）"]];
-      chips=ds.map(d=>`<button class="chip" data-dir="${d[0]}">${d[1]}<b>${ITEMS.filter(x=>x.dir===d[0]).length}</b></button>`).join("");
-      hint=`按行文方向分为上行 / 平行 / 下行 / 通用。请选择方向；方向内按用语类别折叠，点开看条目。`;
+          if (!wide && drawable(x)) return '<span data-ch="'+esc(x)+'">'+esc(x)+'</span>';
+          return '<i class="zwna" title="该字形未收入常用字库">?</i>';
+        }).join('');
+        sw += '<div class="zw">重文<em class="zwlb">《说文》所录异体</em>'+zwParts+'</div>';
+      }
+      sw += '</div>';
     }
-    sub.innerHTML=chips;
-    body.innerHTML=`<p class="hint">${hint}</p>`;
-    bindSub(k);
-  }else{
-    sub.style.display="none"; sub.innerHTML="";
-    body.innerHTML=staticHTML(k);
-    if(k==="shidu") initShidu();
+
+    var bel = BELONG[k] ? '<div class="rel"><div class="sect"><h3>它也是这些字的分身</h3><span class="ln"></span></div>'
+      + BELONG[k].split('').map(function(x){return '<button class="chip" data-ch="'+esc(x)+'">'+esc(x)+'</button>'}).join('')
+      + '</div>' : '';
+
+    var lostHtml = lost.length ? '<details class="lost"><summary>另有 '+lost.length+' 个写法，为该字典专有码位，普通字库无法显示</summary><div class="body">'
+      + lost.map(function(e){return '<i>'+esc(e[1])+'<br>'+esc((e[2]||'').replace(/-/g,'·'))+'</i>'}).join('')
+      + '</div></details>' : '';
+
+
+
+    card.innerHTML = '<div class="card">'
+      + '<div class="fbar">' + [['','宋'],['f-kai','楷'],['f-xing','行'],['f-hei','黑']].map(function(f){
+          return '<button class="fb'+(fntMode===f[0]?' on':'')+'" data-fnt="'+f[0]+'">'+f[1]+'</button>';
+        }).join('') + '</div>'
+      + '<div class="head"><div class="zi '+fntMode+'">'+esc(k)+'</div><div class="meta">'+rows
+      + '<span class="badge">'+vs.length+' 个异体</span></div></div>'
+      + sw
+      + '<div class="sect"><h3>异 体 字 形</h3><span class="n">'+drawn.length+' 个写法可见</span><span class="ln"></span></div>'
+      + (drawn.length ? '<div class="grid '+fntMode+'">'+drawn.join('')+'</div>' : '<div class="empty" style="padding:24px">此字的异体字形均未收入 Unicode 字库</div>')
+      + lostHtml + bel
+      + trail()
+      + '</div>';
+
+    if (drawn.length) hint.textContent = '点击任一异体字形，可继续查它的分身';
+    else hint.textContent = '';
+    return true;
   }
-  homeEl.style.display="none";resultsEl.classList.remove("show");detailEl.classList.add("show");
-  window.scrollTo({top:0,behavior:"smooth"});
-}
 
-function bindSub(k){
-  const sub=document.getElementById("subtabs");
-  sub.querySelectorAll(".chip").forEach(function(c){
-    c.addEventListener("click",function(){
-      sub.querySelectorAll(".chip").forEach(x=>x.classList.remove("on"));
-      c.classList.add("on");
-      if(k==="yongyu"){ renderFunc(c.dataset.f); }
-      else{ renderDir(c.dataset.dir); }
-      window.scrollTo({top:0,behavior:"smooth"});
-    });
-  });
-}
+  var RAD = ('一丨丶丿乙亅二亠人儿入八冂冖冫几凵刀力勹匕匚匸十卜卩厂厶又口囗土士夂夊夕大女子宀寸小尢尸屮山巛工己巾干幺广廴廾弋弓彐彡彳心戈戶手支攴文斗斤方无日曰月木欠止歹殳毋比毛氏气水火爪父爻爿片牙牛犬玄玉瓜瓦甘生用田疋疒癶白皮皿目矛矢石示禸禾穴立竹米糸缶网羊羽老而耒耳聿肉臣自至臼舌舛舟艮色艸虍虫血行衣襾見角言谷豆豕豸貝赤走足身車辛辰辵邑酉釆里金長門阜隶隹雨青非面革韋韭音頁風飛食首香馬骨高髟鬥鬯鬲鬼魚鳥鹵鹿麥麻黃黍黑黹黽鼎鼓鼠鼻齊齒龍龜龠');
+  function radName(n){ return RAD.charAt(n-1) || ''; }
 
-function renderFunc(f){
-  const rs=ITEMS.filter(x=>x.f===f);
-  document.getElementById("dbody").innerHTML =
-    `<div class="sub">${f}<small>${rs.length}</small></div>`+
-    (rs.length ? rs.map(x=>entry(x)).join("") : `<p class="hint">本表未单列；常见如「前来、过府、到县、下部」。</p>`);
-}
-
-function renderDir(d){
-  const rs=ITEMS.filter(x=>x.dir===d);
-  const label={上行:"上行文",平行:"平行文",下行:"下行文",通用:"通用（各体）"}[d]||d;
-  const html=FUNC_ORDER.map(function(f){
-    const g=rs.filter(x=>x.f===f);
-    if(!g.length) return "";
-    return `<details class="grp"><summary><span class="arw">›</span><span>${f}</span><span class="cnt">${g.length}</span></summary>`+g.map(x=>entry(x,true)).join("")+`</details>`;
-  }).join("");
-  document.getElementById("dbody").innerHTML=`<div class="sub dirh ${DIRCLS[d]}">${label}<small>${rs.length}</small></div>`+html;
-}
-
-function search(v){
-  const kw=v.trim();
-  if(!kw){showHome();return;}
-  const kn=kw.replace(/\s/g,"").toLowerCase();
-  const norm=s=>(s||"").toLowerCase().replace(/\s/g,"");
-
-  // 只按「词条名（套语）」与拼音匹配；不搜释义/例句/辨析，避免因别处提及而被带出
-  let hit=ITEMS.filter(x=>norm(x.t).includes(kn) || norm(x.p).includes(kn));
-  hit.sort((a,b)=>{
-    const na=norm(a.t), nb=norm(b.t);
-    const ea=na===kn?0:(na.indexOf(kn)===0?1:2);
-    const eb=nb===kn?0:(nb.indexOf(kn)===0?1:2);
-    return ea-eb || na.length-nb.length;
-  });
-  const wl=WENLEI.filter(r=>norm(r[0]).includes(kn));
-
-  let html="";
-  if(wl.length){
-    html+=`<div class="sub">公文类别<small>${wl.length}</small></div>`+
-      wl.map(r=>`<div class="item"><div class="it-h"><span class="it-t">${r[0]}</span>${dirTag(r[2])}<span class="src-tag">文种</span></div><div class="it-d">${r[1]}</div></div>`).join("");
-  }
-  if(hit.length){
-    html+=`<div class="sub">公文用语 / 惯用辞令<small>${hit.length}</small></div>`+hit.map(x=>entry(x)).join("");
-  }
-  const total=hit.length+wl.length;
-  document.getElementById("resh").innerHTML=`关键词「<b>${kw}</b>」 · 命中 ${total} 条（按词条名 / 拼音匹配）`;
-  document.getElementById("resbody").innerHTML=html;
-  document.getElementById("empty").classList.toggle("show",total===0);
-  document.getElementById("subtabs").style.display="none";
-  homeEl.style.display="none";detailEl.classList.remove("show");resultsEl.classList.add("show");
-}
-
-cardsEl.addEventListener("click",e=>{const c=e.target.closest(".card");if(c)showDetail(c.dataset.k);});
-document.getElementById("toolCta").addEventListener("click",()=>showDetail("shidu"));
-document.getElementById("back").addEventListener("click",showHome);
-
-const clearQ=document.getElementById("clearq");
-function syncClear(){ clearQ.classList.toggle("show", !!qEl.value); }
-qEl.addEventListener("input",e=>{ search(e.target.value); syncClear(); });
-clearQ.addEventListener("click",()=>{ qEl.value=""; syncClear(); showHome(); qEl.focus(); });
-
-document.addEventListener("keydown",e=>{
-  if(e.key==="/"&&document.activeElement!==qEl){e.preventDefault();qEl.focus();}
-  if(e.key==="Escape"){qEl.value=""; syncClear(); showHome();}
-});
-
-/* ===== 公文识读：本地词表匹配（零 token、离线） ===== */
-function escHtml(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
-function escAttr(s){return escHtml(s).replace(/'/g,"&#39;");}
-
-function splitTop(s){
-  const out=[]; let depth=0, cur="";
-  for(const ch of s){
-    if(ch==="（"||ch==="(") depth++;
-    else if(ch==="）"||ch===")") depth=Math.max(0,depth-1);
-    if((ch==="/"||ch==="／"||ch==="、") && depth===0){ out.push(cur); cur=""; }
-    else cur+=ch;
-  }
-  out.push(cur); return out;
-}
-function tkVariants(it){
-  const out=new Set();
-  splitTop(it.t).forEach(seg=>{
-    seg=seg.trim(); if(!seg) return;
-    const m=seg.match(/^(.*?)[（(]([^（）()]*)[)）]\s*$/);
-    if(m){
-      const base=m[1].trim();
-      if(base.includes("……")){
-        // 省略号条目只取≥2字片段，且跳过以「事/外」收尾的泛化片段
-        if(!/[事外]$/.test(base)){
-          base.split("……").forEach(p=>{ p=p.trim(); if(p.length>=2) out.add(p); });
-        }
-      }else if(base){ out.add(base); }
-      splitTop(m[2]).forEach(x=>{ x=x.trim(); if(x) out.add(x); });
-    }else if(seg.includes("……")){
-      seg.split("……").forEach(p=>{ p=p.trim(); if(p.length>=2) out.add(p); });
-    }else{
-      out.add(seg);
+  /* ---------- 交互 ---------- */
+  function go(ch){
+    ch = (ch||'').trim();
+    if (!ch) return;
+    var m = ch.match(/[\u3400-\u4DBF\u4E00-\u9FFF\u{20000}-\u{3FFFF}]/u);
+    if (!m) return;
+    var c = m[0];
+    hidePanels();
+    if (render(c)) {
+      path.push(c);
+      var pbx = document.getElementById('parts');
+      if (pbx && !pbx.hidden && typeof window.__showDecomp === 'function') window.__showDecomp(c);
+      if (path.length > 12) path.shift();
+      try { history.replaceState(null, '', '#' + encodeURIComponent(c)); } catch(e){}
     }
-  });
-  if(it.t==="为……事"){
-    ["为令遵事","为令知事","为令饬事","为通令事","为布告事","为咨请事","为咨复事","为咨商事",
-     "呈为呈请事","呈为呈复事","呈为呈报事","呈为呈送事"].forEach(v=>out.add(v));
+    if (document.activeElement !== input) input.value = c;
   }
-  return [...out];
-}
 
-const TERMS=(function(){
-  const seen=new Map();
-  // 倒序遍历：让更靠后、更具体的词条优先占位（如「为令遵事」优先于泛化的「为……事」）
-  [...ITEMS].reverse().forEach(it=>{ tkVariants(it).forEach(v=>{ if(!seen.has(v)) seen.set(v,it); }); });
-  return [...seen.entries()].map(([term,it])=>({term,it})).sort((a,b)=>b.term.length-a.term.length);
-})();
-
-let sdText="";
-const SD_SAMPLE="为令遵事：案据该县呈称，河道淤塞、亟应疏浚等情到厅，当经本厅复核属实。合行令仰该县即便遵照办理，迅将工程情形造册具报，毋得稍涉敷衍，切切此令。";
-
-function initShidu(){
-  const ta=document.getElementById("sdin"); if(!ta) return;
-  const outEl=document.getElementById("sdout");
-  const bar=document.getElementById("sdproofbar");
-  ta.value=sdText||"";
-  ta.addEventListener("input",()=>{ sdText=ta.value; });
-
-  let lock=false;
-  const link=function(src,dst){
-    src.addEventListener("scroll",function(){
-      if(lock) return;
-      lock=true;
-      const a=src.scrollHeight-src.clientHeight;
-      const b=dst.scrollHeight-dst.clientHeight;
-      dst.scrollTop = a>0 ? (src.scrollTop/a)*b : 0;
-      requestAnimationFrame(function(){ lock=false; });
-    },{passive:true});
-  };
-  if(outEl){ link(ta,outEl); link(outEl,ta); }
-
-  function undoBtn(){
-    return `<button class="pd-mini" data-act="undo"${UNDO.length?"":" disabled"}>撤销</button>`;
-  }
-  function baseBar(){
-    bar.innerHTML=`<button class="pd-mini" data-act="auto">自动断句</button>
-      <button class="pd-mini" data-act="proof">校对句读</button>${undoBtn()}`;
-  }
-  function doUndo(){
-    if(!UNDO.length) return;
-    ta.value=UNDO.pop(); PROOF=null; analyzeShidu(); baseBar();
-  }
-  baseBar();
-
-  bar.addEventListener("click",function(e){
-    const a=e.target.closest("[data-act]"); if(!a) return;
-    const act=a.dataset.act;
-    if(act==="auto"){
-      if(!ta.value.trim()) return;
-      const fixed=punctuate(ta.value);
-      analyzeText(fixed,"已自动断句（原文未改动）");
-      baseBar();
+  card.addEventListener('click', function(e){
+    var mo = e.target.closest('.shuowen .more');
+    if (mo){
+      var blk = mo.closest('.shuowen');
+      var tx = blk.querySelector('.txt');
+      var clipped = tx.classList.toggle('clip');
+      mo.textContent = clipped ? '\u5c55\u5f00\u5168\u6587 \u25BE' : '\u6536\u8d77 \u25B4';
       return;
     }
-    if(act==="proof"){ proofread(); return; }
-    if(act==="undo"){ doUndo(); return; }
-    if(act==="exit"){ PROOF=null; analyzeShidu(); baseBar(); return; }
-    if(!PROOF) return;
-    if(act==="all-s"){ PROOF.diffs.forEach(function(d){ PROOF.dec[d.p]="s"; }); renderProof(); return; }
-    if(act==="all-o"){ PROOF.diffs.forEach(function(d){ PROOF.dec[d.p]="o"; }); renderProof(); return; }
-    if(act==="apply"){
-      const prev=ta.value;
-      const txt=buildChosen();
-      if(txt!==prev) pushUndo(prev);
-      sdText=txt; ta.value=txt; PROOF=null; analyzeShidu(); baseBar();
-    }
-  });
-
-  outEl.addEventListener("change",function(e){
-    const cb=e.target.closest("input[data-p]");
-    if(!cb || !PROOF) return;
-    PROOF.dec[parseInt(cb.dataset.p,10)] = cb.checked ? "s" : "o";
-    renderProof();
-  });
-
-  document.getElementById("sdrun").addEventListener("click",()=>{ PROOF=null; baseBar(); analyzeShidu(); });
-  document.getElementById("sdclear").addEventListener("click",()=>{
-    if(ta.value.trim()) pushUndo(ta.value);
-    sdText=""; ta.value=""; PROOF=null; LAST=null;
-    outEl.innerHTML=""; baseBar(); ta.focus();
-  });
-  /* 例文下拉：自动抓取「通用例文」中的 16 篇（4 综合 + 12 文种示例） */
-  (function(){
-    const pick=document.getElementById("sdpick"), btn=document.getElementById("sdflbtn"),
-          menu=document.getElementById("sdfl");
-    if(!pick||!btn||!menu) return;
-    const EX=[];
-    [["tpl-lifa","综合例文（4 篇）"],["tpl-li12","十二文种示例（12 篇）"]].forEach(function(g){
-      const box=document.getElementById(g[0]); if(!box) return;
-      const ds=box.querySelectorAll("details"); if(!ds.length) return;
-      const h=document.createElement("div"); h.className="grp"; h.textContent=g[1]; menu.appendChild(h);
-      [...ds].forEach(function(d){
-        const sm=d.querySelector("summary"), bd=d.querySelector(".exbody");
-        if(!sm||!bd) return;
-        const raw=(bd.innerText||bd.textContent||"");
-        const txt=raw.replace(/\u00a0/g," ").replace(/[ \t]+/g," ")
-                     .replace(/ *\n */g,"\n").replace(/\n{2,}/g,"\n").trim();
-        if(!txt) return;
-        const full=sm.textContent.replace(/\s+/g," ").trim();
-        const b=document.createElement("button");
-        b.type="button"; b.className="it"; b.title=full;
-        const ci=full.indexOf("：");
-        if(ci>0 && /^例文/.test(full)){
-          b.className="it it-split";
-          b.innerHTML='<span class="pfx">'+escHtml(full.slice(0,ci+1))+'</span>'
-                     +'<span class="rest">'+escHtml(full.slice(ci+1))+'</span>';
-        }else{
-          b.textContent=full;
-        }
-        b.dataset.i=String(EX.push(txt)-1);
-        menu.appendChild(b);
+    var fb = e.target.closest('[data-fnt]');
+    if (fb){
+      fntMode = fb.getAttribute('data-fnt');
+      var g = card.querySelector('.grid');
+      if (g) g.className = 'grid ' + fntMode;
+      var zi = card.querySelector('.zi');
+      if (zi) zi.className = 'zi ' + fntMode;
+      card.querySelectorAll('.fnts .fb').forEach(function(b){
+        b.classList.toggle('on', b.getAttribute('data-fnt') === fntMode);
       });
-    });
-    function close(){ pick.classList.remove("on"); btn.setAttribute("aria-expanded","false"); }
-    function place(){
-      const r=btn.getBoundingClientRect();
-      const W=Math.min(320, (window.innerWidth||375)-16);
-      const H=Math.min(window.innerHeight*.33, 300);
-      menu.style.width=W+"px";
-      const narrow=(window.innerWidth||375)<=640;
-      const left=narrow ? (window.innerWidth-W)/2  // 手机：屏幕水平居中
-                        : Math.max(8,Math.min(r.left, window.innerWidth-W-8)); // 桌面：贴按钮、不越界
-      menu.style.left=Math.max(8,left)+"px";
-      menu.style.top=Math.max(8,Math.min(r.bottom+6, window.innerHeight-H-16))+"px";
-    }
-    btn.addEventListener("click",function(e){
-      e.stopPropagation();
-      const on=pick.classList.toggle("on");
-      btn.setAttribute("aria-expanded",on?"true":"false");
-      if(on) place();
-    });
-    window.addEventListener("resize",close);
-    menu.addEventListener("click",function(e){
-      const it=e.target.closest(".it"); if(!it) return;
-      const txt=EX[+it.dataset.i]; if(!txt) return;
-      if(ta.value.trim() && ta.value!==txt) pushUndo(ta.value);
-      sdText=txt; ta.value=txt; PROOF=null;
-      analyzeShidu(); baseBar(); close();
-    });
-    document.addEventListener("click",function(e){ if(!pick.contains(e.target)) close(); });
-    document.addEventListener("keydown",function(e){ if(e.key==="Escape") close(); });
-  })();
-
-  document.getElementById("sdexport").addEventListener("click",function(){
-    openExport(document.getElementById("sdfmt").value);
-  });
-  initExport();
-  document.getElementById("sdone").addEventListener("change",()=>{ analyzeShidu(); });
-
-  if(sdText) analyzeShidu();
-}
-function guessType(s){
-  if(/此状/.test(s)) return "任命状";
-  if(/此批/.test(s)) return "批";
-  if(/此布/.test(s)) return "布告";
-  if(/此咨/.test(s)) return "咨";
-  if(/此致/.test(s)) return "公函";
-  if(/谨呈/.test(s)) return "呈";
-  if(/此令/.test(s)){
-    if(/为令遵事|为令饬事|为令知事|训令/.test(s)) return "训令";
-    if(/呈悉|呈件均悉/.test(s)) return "指令";
-    return "令";
-  }
-  if(/为布告事|照得/.test(s)) return "布告";
-  if(/为咨请事|为咨复事|为咨商事/.test(s)) return "咨";
-  if(/径启者|迳启者/.test(s)) return "公函";
-  if(/呈为/.test(s)) return "呈";
-  return "";
-}
-
-/* 启发式断句：依公文套语插入标点（初步断句，需人工校对） */
-const PUNCT_RULES = [
-  {p:"：", m:["为令知事","为令遵事","为令饬事","为通令事","为布告事","为会呈事",
-              "呈为呈请事","呈为呈复事","呈为呈报事","呈为呈送事",
-              "为咨请事","为咨复事","为咨商事","径启者","迳启者","敬启者","敬呈者","签呈"]},
-  {p:"：", m:["训令开","令开","咨开","函开","内开","节开","略开"]},
-  {p:"。", m:["各等因","各等情","等因","等由","等情","等语"]},
-  {p:"，", m:["奉此","准此","据此"]},
-  {p:"。", before:true, m:["此令","此批","此布","此咨","此致","此状","特此布告"]},
-  {p:"。", m:["在案","各在案","属实"]},
-  {p:"。", m:["呈及附件均悉","呈件均悉","来呈已悉","据呈已悉","呈悉","状悉","各呈均悉"]},
-  {p:"，", m:["到厅","到署","到县","到府","前来"]},
-  {p:"，", m:["是否有当"]},
-  {p:"。", m:["应毋庸议"]},
-  {p:"，", before:true, m:["仰祈鉴核示遵","仰祈鉴核施行","仰祈鉴核备案","伏乞鉴核"]},
-  {p:"。", before:true, m:["谨呈"]},
-  {p:"，", before:true, m:["合行","令仰","仰即","毋得","毋稍","勿延","勿再","切切","拟请","相应","即希","应准","仰一体知照",
-      "共用去","第一期","第二期","第三期","第四期","共计","总计","所有","前项","此项","以上"]}
-];
-
-function softBreak(s, th){
-  th=th||16;
-  const soft=["共计","总计","所有","前项","此项","共用去","第一期","第二期","第三期","第四期",
-              "查","惟","至","其","此","拟","应","但","如","若","因","另","又","再"];
-  let out="", run=0;
-  for(let i=0;i<s.length;i++){
-    if(/[，。：；、！？]/.test(s[i])){ out+=s[i]; run=0; continue; }
-    let hit=null;
-    for(let k=0;k<soft.length;k++){ if(s.startsWith(soft[k],i)){ hit=soft[k]; break; } }
-    if(hit && run>=th){ out+="，"; run=0; }
-    out+=s[i]; run++;
-  }
-  return out;
-}
-
-function punctuate(text, th){
-  const flat=[];
-  PUNCT_RULES.forEach(r=>r.m.forEach(m=>flat.push({m:m,p:r.p,before:!!r.before})));
-  flat.sort((a,b)=>b.m.length-a.m.length);
-  return text.split(/\n/).map(function(line){
-    let s=line.replace(/\s+/g,"");
-    if(!s) return "";
-    let res="", i=0;
-    while(i<s.length){
-      let hit=null;
-      for(let k=0;k<flat.length;k++){ if(s.startsWith(flat[k].m,i)){ hit=flat[k]; break; } }
-      if(hit){
-        // 「合行令仰」不拆开
-        if(hit.m==="令仰" && /合行$/.test(res)){ res+=hit.m; i+=hit.m.length; continue; }
-        if(hit.m==="合行" && s.startsWith("令仰", i+hit.m.length)){ res+=hit.m; i+=hit.m.length; continue; }
-        if(hit.m==="谨呈"){
-          if(/[，、；：]$/.test(res)) res=res.slice(0,-1)+"。";
-          else if(res && !/[。！？]$/.test(res)) res+="。";
-          res+=hit.m; i+=hit.m.length; continue;
-        }
-        if(hit.before){
-          if(res && !/[，。：；、]/.test(res.slice(-1))) res+=hit.p;
-          res+=hit.m; i+=hit.m.length;
-          continue;
-        }
-        res+=hit.m; i+=hit.m.length;
-        let p=hit.p;
-        // 「等情/等由」后接 到/前/据，改逗号更顺
-        if((hit.m==="等情"||hit.m==="等由") && /[到前据]/.test(s[i]||"")) p="";
-        if(i<s.length && !/[，。：；、]/.test(s[i])) res+=p;
-        continue;
-      }
-      res+=s[i]; i++;
-    }
-    res=res.replace(/，+/g,"，").replace(/。+/g,"。").replace(/，。/g,"。").replace(/：。+/g,"：");
-    res=softBreak(res, th);
-    if(!/[。！？]$/.test(res)) res+="。";
-    return res;
-  }).join("\n");
-}
-
-function buildSegments(text, inc){
-  const terms=TERMS.filter(x=> x.term.length>=2 || inc);
-  const re=new RegExp(terms.map(x=>x.term.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|"),"g");
-  const segs=[]; let last=0, m;
-  const stat=new Map();
-  while((m=re.exec(text))!==null){
-    if(m.index>last) segs.push({text:text.slice(last,m.index),hit:false});
-    const hit=terms.find(x=>x.term===m[0]);
-    segs.push({text:m[0],hit:true,def:hit?hit.it.d:"",it:hit?hit.it:null});
-    if(hit) stat.set(hit.it,(stat.get(hit.it)||0)+1);
-    last=m.index+m[0].length;
-    if(m[0].length===0) re.lastIndex++;
-  }
-  if(last<text.length) segs.push({text:text.slice(last),hit:false});
-  let count=0; stat.forEach(n=>{count+=n;});
-  return {segs,stat,count};
-}
-
-let LAST=null;
-let LASTSUG=null;
-let PROOF=null;
-
-function analyzeShidu(){
-  const ta=document.getElementById("sdin");
-  analyzeText((ta?ta.value:"").replace(/\r/g,""),"");
-}
-
-function renderReport(stat,count,dirs,g,label){
-  const st=document.getElementById("sdstat"); if(!st) return;
-  const COL={上行:"#4f7a52",平行:"#a08246",下行:"#b04a4a",通用:"#6b8fa6"};
-  const top=[...stat.entries()].sort(function(a,b){ return b[1]-a[1]; }).slice(0,10);
-  st.className="sd-rep";
-  st.innerHTML=`<div class="sr-line">${label?`<span>${label}</span>`:""}
-    <span>命中套语 <b>${count}</b> 处，涉及 <b>${stat.size}</b> 个词条</span>
-    <span>行文方向 上 <b>${dirs.上行}</b> · 平 <b>${dirs.平行}</b> · 下 <b>${dirs.下行}</b> · 通 <b>${dirs.通用}</b></span>
-    ${g?`<span>文种推测 <b>${g}</b></span>`:""}</div>
-    ${top.length?`<div class="sr-chips">${top.map(function(p){
-      const it=p[0]; const nm=(it.t||"").length>26?it.t.slice(0,25)+"…":(it.t||"");
-      return `<span class="sr-chip"><i style="background:${COL[it.dir]||"#999"}"></i>${escHtml(nm)}<b>×${p[1]}</b></span>`;
-    }).join("")}</div>`:""}`;
-}
-
-function analyzeText(text, label){
-  const out=document.getElementById("sdout"), st=document.getElementById("sdstat");
-  if(!text.trim()){
-    out.innerHTML="";
-    if(st){ st.className="sd-rep"; st.textContent="识读后这里显示命中统计与高频词条。"; }
-    LAST=null; return;
-  }
-  const inc=document.getElementById("sdone").checked;
-  const r=buildSegments(text,inc);
-  const segs=r.segs, stat=r.stat, count=r.count;
-  out.innerHTML=segs.map(function(s){ return s.hit
-    ? `<span class="tk" title="${escAttr(s.def)}">${escHtml(s.text)}</span>`
-    : escHtml(s.text); }).join("");
-
-  const dirs={上行:0,平行:0,下行:0,通用:0};
-  stat.forEach(function(n,it){ dirs[it.dir]=(dirs[it.dir]||0)+n; });
-  const g=guessType(text);
-  renderReport(stat,count,dirs,g,label);
-  LAST={text:text,segs:segs,stat:stat,count:count,dirs:dirs,g:g};
-}
-
-const pad2=n=>("0"+n).slice(-2);
-function stamp(){ const d=new Date();
-  return d.getFullYear()+pad2(d.getMonth()+1)+pad2(d.getDate())+"_"+pad2(d.getHours())+pad2(d.getMinutes()); }
-function metaLine(){
-  const {count,stat,dirs,g}=LAST;
-  return `命中套语 ${count} 处 · 涉及 ${stat.size} 个词条　|　上行 ${dirs.上行} · 平行 ${dirs.平行} · 下行 ${dirs.下行} · 通用 ${dirs.通用}`+(g?`　|　文种推测：${g}`:"");
-}
-
-function buildReportCanvas(){
-  const W=900, PAD=44, LH=30, FS=15;
-  const cvs=document.createElement("canvas");
-  const ctx=cvs.getContext("2d");
-  ctx.font=`${FS}px "Noto Serif SC","Songti SC",serif`;
-  const maxW=W-PAD*2, chars=[];
-  LAST.segs.forEach(s=>{ for(const ch of s.text) chars.push({ch,hit:s.hit}); });
-  let lines=[], cur=[], w=0;
-  chars.forEach(c=>{
-    if(c.ch==="\n"){ lines.push(cur); cur=[]; w=0; return; }
-    const cw=ctx.measureText(c.ch).width;
-    if(w+cw>maxW && cur.length){ lines.push(cur); cur=[]; w=0; }
-    cur.push({ch:c.ch,hit:c.hit,w:cw,x:w}); w+=cw;
-  });
-  if(cur.length) lines.push(cur);
-
-  const TOP=PAD+16, HEAD=126, FOOT=64;
-  const H=TOP+HEAD+lines.length*LH+FOOT+PAD;
-  cvs.width=W*2; cvs.height=H*2;
-  ctx.scale(2,2);
-  ctx.fillStyle="#f7f2e4"; ctx.fillRect(0,0,W,H);
-  ctx.textBaseline="top";
-  let y=TOP;
-  ctx.fillStyle="#241f19"; ctx.font=`700 22px "Noto Serif SC","Songti SC",serif`;
-  ctx.fillText("民国公文识读报告", PAD, y); y+=34;
-  ctx.font=`13px "PingFang SC",sans-serif`; ctx.fillStyle="#5c554a";
-  ctx.fillText("生成时间："+new Date().toLocaleString("zh-CN"), PAD, y); y+=21;
-  ctx.fillText(metaLine(), PAD, y); y+=16;
-  ctx.strokeStyle="#e0d5bd"; ctx.beginPath(); ctx.moveTo(PAD,y); ctx.lineTo(W-PAD,y); ctx.stroke();
-  y+=16;
-  const bodyTop=y;
-  lines.forEach((ln,i)=>{ const ly=bodyTop+i*LH; ln.forEach(c=>{ if(c.hit){ ctx.fillStyle="#f7e8c8"; ctx.fillRect(PAD+c.x-1, ly+2, c.w+2, LH-6); } }); });
-  ctx.font=`${FS}px "Noto Serif SC","Songti SC",serif`;
-  lines.forEach((ln,i)=>{ const ly=bodyTop+i*LH; ln.forEach(c=>{ ctx.fillStyle=c.hit?"#7c4a2c":"#241f19"; ctx.fillText(c.ch, PAD+c.x, ly); }); });
-  const fy=bodyTop+lines.length*LH+20;
-  ctx.strokeStyle="#e0d5bd"; ctx.beginPath(); ctx.moveTo(PAD,fy); ctx.lineTo(W-PAD,fy); ctx.stroke();
-  ctx.font=`12px "PingFang SC",sans-serif`; ctx.fillStyle="#948b7b";
-  ctx.fillText("民国公文速查 · 公文识读　|　识别与释义仅供参考，非权威鉴定", PAD, fy+12);
-  return cvs;
-}
-
-function durlBytes(durl){
-  const bin=atob(durl.split(",")[1]);
-  const out=new Uint8Array(bin.length);
-  for(let i=0;i<bin.length;i++) out[i]=bin.charCodeAt(i);
-  return out;
-}
-
-/* ===== 文字版 PDF（A4，可选中/检索） ===== */
-const PDF_CSS='@page{size:A4;margin:16mm 14mm;}'
- +'body{margin:0;background:#fff;font-family:"Noto Serif SC","Songti SC",serif;color:#241f19;'
- +'font-size:13.5px;line-height:1.9;padding:60px 53px;box-sizing:border-box;}'
- +'.pdf-h{font-size:20px;font-weight:700;margin-bottom:6px;}'
- +'.pdf-m{font-size:11.5px;color:#5c554a;line-height:1.8;margin-bottom:10px;border-bottom:1px solid #ddd;padding-bottom:8px;}'
- +'.pdf-b{white-space:pre-wrap;word-break:break-word;}'
- +'.tk{background:#f7e8c8;color:#7c4a2c;border-bottom:1px dashed #b9a06a;}'
- +'.pdf-f{margin-top:12px;border-top:1px solid #ddd;padding-top:8px;font-size:10.5px;color:#948b7b;}';
-
-function reportHtmlBody(){
-  const body=LAST.segs.map(s=> s.hit
-    ? '<span class="tk">'+escHtml(s.text)+'</span>'
-    : escHtml(s.text)).join("");
-  return '<div class="pdf-h">民国公文识读报告</div>'
-    +'<div class="pdf-m">生成时间：'+new Date().toLocaleString("zh-CN")+'<br>'+escHtml(metaLine())+'</div>'
-    +'<div class="pdf-b">'+body+'</div>'
-    +'<div class="pdf-f">民国公文速查 · 公文识读　|　识别与释义仅供参考，非权威鉴定。</div>';
-}
-
-function pdfPreviewHtml(){
-  return '<!doctype html><html><head><meta charset="utf-8"><style>'+PDF_CSS+'</style></head>'
-    +'<body>'+reportHtmlBody()+'</body></html>';
-}
-
-function printReport(){
-  let area=document.getElementById("printArea");
-  if(!area){ area=document.createElement("div"); area.id="printArea"; document.body.appendChild(area); }
-  area.innerHTML=reportHtmlBody();
-  document.body.classList.add("printing");
-  const done=function(){ document.body.classList.remove("printing"); window.removeEventListener("afterprint",done); };
-  window.addEventListener("afterprint",done);
-  setTimeout(function(){
-    window.print();
-    setTimeout(function(){ document.body.classList.remove("printing"); },1500);
-  },80);
-  toast("在打印窗口「目标」里选「另存为 PDF」，即可选位置保存");
-}
-
-/* 通用 HTML 页面预览（等比缩放，A4 宽 794px） */
-function htmlPreview(bd, html, minH){
-  const wide=bd.clientWidth||Math.min(880, (window.innerWidth||1024)-60);
-  const avail=wide-40;
-  const scale=Math.max(.25, Math.min(1, avail/794));
-  const wrap=document.createElement("div");
-  wrap.style.cssText="width:"+(794*scale)+"px;height:"+((minH||1123)*scale)+"px;margin:0 auto;overflow:hidden;background:#fff;"
-    +"box-shadow:0 2px 10px rgba(0,0,0,.12);";
-  const fr=document.createElement("iframe");
-  fr.setAttribute("scrolling","no");
-  fr.style.cssText="width:794px;height:"+(minH||1123)+"px;border:0;background:#fff;display:block;"
-    +"transform:scale("+scale+");transform-origin:top left;";
-  fr.srcdoc=html;
-  fr.onload=function(){
-    let h=minH||1123;
-    try{
-      const d=fr.contentDocument;
-      h=Math.max(400, d.documentElement.scrollHeight||0, d.body?d.body.scrollHeight:0);
-    }catch(e){}
-    fr.style.height=h+"px"; wrap.style.height=(h*scale)+"px";
-  };
-  wrap.appendChild(fr); bd.appendChild(wrap);
-  return wrap;
-}
-
-function buildDocHtml(){
-  const body=LAST.segs.map(s=> s.hit
-    ? '<span style="color:#7c4a2c;background:#f7e8c8">'+escHtml(s.text)+'</span>'
-    : escHtml(s.text).replace(/\n/g,"<br>")).join("");
-  const meta=metaLine().replace(/　/g,"&nbsp;&nbsp;");
-  return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
-    +'<head><meta charset="utf-8"><title>民国公文识读报告</title>'
-    +'<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->'
-    +'<style>@page{size:A4;margin:2.54cm 2.6cm;}'
-    +'body{font-family:"宋体",SimSun,serif;font-size:12pt;line-height:1.9;color:#241f19;}'
-    +'h1{font-family:"黑体",SimHei;font-size:18pt;margin:0 0 6pt;}'
-    +'.m{font-family:"宋体",SimSun;font-size:9.5pt;color:#555;margin:0 0 12pt;}'
-    +'.b{text-align:justify;}'
-    +'.f{font-size:8.5pt;color:#888;border-top:1px solid #ccc;padding-top:6pt;margin-top:16pt;font-family:"宋体",SimSun;}'
-    +'</style></head><body>'
-    +'<h1>民国公文识读报告</h1>'
-    +'<p class="m">生成时间：'+new Date().toLocaleString("zh-CN")+'<br>'+meta+'</p>'
-    +'<p class="b">'+body+'</p>'
-    +'<p class="f">民国公文速查 · 公文识读　|　识别与释义仅供参考，非权威鉴定。</p>'
-    +'</body></html>';
-}
-
-async function saveBlob(blob, name, mime, ext){
-  try{
-    if(window.showSaveFilePicker){
-      const handle=await window.showSaveFilePicker({suggestedName:name,
-        types:[{description:ext.replace(".","").toUpperCase()+" 文件", accept:{[mime]:[ext]}}]});
-      const w=await handle.createWritable();
-      await w.write(blob); await w.close();
-      toast("已保存："+name);
       return;
     }
-  }catch(err){
-    if(err && err.name==="AbortError") return;
-  }
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob); a.download=name;
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(function(){ URL.revokeObjectURL(a.href); },2500);
-  toast("已开始下载："+name);
-}
+    var t = e.target.closest('[data-ch]');
+    if (t){ go(t.getAttribute('data-ch')); }
+  });
 
-let toastT=null;
-function toast(msg){
-  let el=document.getElementById("sdtoast");
-  if(!el){ el=document.createElement("div"); el.id="sdtoast"; el.className="mo-toast"; document.body.appendChild(el); }
-  el.textContent=msg; el.classList.add("on");
-  clearTimeout(toastT);
-  toastT=setTimeout(function(){ el.classList.remove("on"); },2200);
-}
+  var lastQ = '';
+  function pickChar(str){
+    var chars = Array.from(str || '').filter(function(c){ return /[\u3400-\u4DBF\u4E00-\u9FFF\u{20000}-\u{3FFFF}]/u.test(c) });
+    return chars;
+  }
+  function handle(){
+    var v = input.value.trim();
+    if (v === lastQ) return;
+    lastQ = v;
+    if (!v) return;
+    var chars = pickChar(v);
+    if (!chars.length) return;
+    if (chars.length > 1){ renderText(v); return; }
+    go(chars[0]);
+  }
+  function handleSoon(){ setTimeout(handle, 20); }
+  input.addEventListener('input', handle);
+  input.addEventListener('compositionend', handleSoon);
+  input.addEventListener('change', handle);
+  input.addEventListener('keyup', function(e){
+    if (e.isComposing) return;
+    if (e.key === 'Enter' || e.key === 'Backspace' || (e.key && e.key.length === 1 && pickChar(input.value).length)) handle();
+  });
+  input.addEventListener('paste', handleSoon);
+  document.addEventListener('focusout', function(){ if (input.value.trim()) handle(); });
 
-let SAVER=null;
-function openExport(fmt){
-  initExport();
-  if(!LAST){ var st=document.getElementById("sdstat"); if(st) st.textContent="请先「识读」再导出。"; return; }
-  const mo=document.getElementById("sdmo"), bd=document.getElementById("sdmobd"),
-        tip=document.getElementById("sdmotip"), fname=document.getElementById("sdmofmt");
-  mo.classList.add("on");
-  bd.innerHTML=""; tip.textContent=""; tip.className="mo-tip"; SAVER=null;
-  const base="民国公文识读_"+stamp();
-  if(fmt==="png"){
-    const cvs=buildReportCanvas();
-    const img=new Image(); img.src=cvs.toDataURL("image/png");
-    img.style.maxWidth=Math.min(560, Math.max(200,(bd.clientWidth||600)-40))+"px";
-    bd.appendChild(img);
-    fname.textContent="图片 · PNG";
-    tip.textContent="尺寸 "+cvs.width+"×"+cvs.height+" px（2 倍高清）；点「保存到本地」后自行选择存放位置。";
-    SAVER=function(){ cvs.toBlob(function(b){ saveBlob(b, base+".png", "image/png", ".png"); }, "image/png"); };
-  }else if(fmt==="pdf"){
-    htmlPreview(bd, pdfPreviewHtml(), 1123);
-    fname.textContent="PDF · A4 文字版";
-    tip.textContent="文字版 PDF：A4 纵向，可选中、可检索。点「保存到本地」后在打印窗口「目标」选「另存为 PDF」，再选存放位置。";
-    SAVER=printReport;
-  }else{
-    htmlPreview(bd, buildDocHtml(), 1123);
-    fname.textContent="Word · .doc";
-    tip.textContent="Word 文档（.doc，Word/WPS 均可打开、可继续编辑）；点「保存到本地」后自行选择存放位置。";
-    SAVER=function(){ saveBlob(new Blob(["\ufeff"+buildDocHtml()],{type:"application/msword"}),
-      base+".doc", "application/msword", ".doc"); };
-  }
-  bd.scrollTop=0;
-}
 
-function initExport(){
-  if(!document.getElementById("sdmo")){
-    const html='<div class="mo" id="sdmo"><div class="mo-box">'
-      +'<div class="mo-hd">导出预览 · <b id="sdmofmt"></b><button class="mo-x" id="sdmox" aria-label="关闭">×</button></div>'
-      +'<div class="mo-bd" id="sdmobd"></div>'
-      +'<div class="mo-ft"><span class="mo-tip" id="sdmotip"></span>'
-      +'<button class="btn" id="sdmocancel">取消</button>'
-      +'<button class="btn primary" id="sdmosave">保存到本地</button></div>'
-      +'</div></div>';
-    document.body.insertAdjacentHTML("beforeend",html);
+  function renderText(str){
+    var chars = Array.from(str).filter(function(c){ return /[\u3400-\u9FFF]/.test(c) });
+    if (!chars.length) return;
+    var seen = {}, items = '';
+    chars.forEach(function(c, i){
+      var k = resolve(c) || c, d = CH[k] || {};
+      var n = (d.v||[]).length;
+      items += '<div class="gl-item'+(n?' has':'')+'" data-ch="'+esc(c)+'"><span class="c">'+esc(c)+'</span>'
+        + '<span class="n">'+(n?n+' 体':'—')+'</span></div>';
+    });
+    card.innerHTML = '<div class="card"><div class="sect"><h3>逐 字 查 验</h3><span class="n">'+chars.length+' 字</span><span class="ln"></span></div>'
+      + '<div class="glyphs">'+items+'</div>'
+      + '<div style="margin-top:16px;font-size:11.5px;color:var(--dim)">点任一字，展开它的分身</div></div>';
+    hint.textContent = '已按碑文逐字拆开';
   }
-  const mo=document.getElementById("sdmo");
-  if(!mo || mo.dataset.ready) return;
-  mo.dataset.ready="1";
-  document.getElementById("sdmox").addEventListener("click",function(){ mo.classList.remove("on"); });
-  document.getElementById("sdmocancel").addEventListener("click",function(){ mo.classList.remove("on"); });
-  mo.addEventListener("click",function(e){ if(e.target===mo) mo.classList.remove("on"); });
-  document.getElementById("sdmosave").addEventListener("click",function(){ if(SAVER) SAVER(); });
-  document.addEventListener("keydown",function(e){ if(e.key==="Escape") mo.classList.remove("on"); });
-}
 
-/* 校对句读：重新断句，并与原文标点逐位比对 */
-const PUNCT_SET=/[，。：；、！？,.:;!?「」『』（）()《》〈〉…—·\s"'“”‘’]/;
-function isP(ch){ return PUNCT_SET.test(ch); }
-function stripPunct(s){ return s.replace(/[，。：；、！？,.:;!?「」『』（）()《》〈〉…—·\s"'“”‘’]/g,""); }
-function markMap(s){
-  const m={}; let n=0;
-  for(const ch of s){
-    if(isP(ch)){ const c=ch.replace(/\s/g,""); if(c) m[n]=(m[n]||"")+c; }
-    else n++;
+  /* 主题 */
+  document.querySelectorAll('.th').forEach(function(b){
+    b.addEventListener('click', function(){
+      MODE = b.dataset.k;
+      document.querySelectorAll('.th').forEach(function(x){ x.classList.toggle('on', x === b) });
+      var t = THEMES[MODE], st = document.documentElement.style;
+      for (var k in t) st.setProperty('--'+k, t[k]);
+      if (path.length) { var last = path[path.length-1]; render(last); }
+    });
+  });
+
+  /* 快捷 */
+  var QUICK = '馬为靈壽龍國真禮無與處龜華亂殺鳥風雲書萬齊齒';
+  $('#quick').innerHTML = Array.from(QUICK).map(function(c){
+    return '<button data-ch="'+c+'">'+c+'</button>';
+  }).join('');
+  $('#quick').addEventListener('click', function(e){
+    var t = e.target.closest('[data-ch]');
+    if (t){ var c = t.getAttribute('data-ch'); input.value = c; lastQ = c; go(c); }
+  });
+
+  /* 随机 */
+  $('#rnd').addEventListener('click', function(){
+    var keys = Object.keys(CH).filter(function(k){ return (CH[k].v||[]).length >= 8 });
+    var c = keys[Math.floor(Math.random()*keys.length)];
+    input.value = c; go(c);
+  });
+
+  /* 存图 */
+  $('#save').addEventListener('click', function(){
+    if (!path.length){ hint.textContent = '先查一个字'; return; }
+    exportPNG(path[path.length-1]);
+  });
+
+  var CFONT = '"Songti SC","Noto Serif CJK SC","Source Han Serif SC",serif';
+  function exportPNG(ch){
+    var k = resolve(ch) || ch, d = CH[k] || {}, vs = [];
+    (d.v||[]).forEach(function(e){ if (drawable(e[0])) vs.push(e[0]) });
+    vs = vs.slice(0, 24);
+    var W = 900, cols = 6, cell = 120, headerH = 300;
+    var rows = Math.max(1, Math.ceil(vs.length/cols));
+    var H = headerH + rows*cell + 110;
+    var t = THEMES[MODE];
+    var cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    var x = cv.getContext('2d');
+    x.fillStyle = t.bg; x.fillRect(0,0,W,H);
+    x.fillStyle = t.card; x.fillRect(40,40,W-80,H-80);
+    x.strokeStyle = t.line; x.strokeRect(40.5,40.5,W-81,H-81);
+    x.fillStyle = t.ink; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.font = '500 30px ' + CFONT;
+    x.fillText('字 的 分 身', W/2, 96);
+    x.font = '13px ' + CFONT;
+    x.fillStyle = t.mut; x.fillText('历代异体 · 简繁 · 《说文》重文', W/2, 128);
+    x.fillStyle = t.ink; x.font = '110px ' + CFONT;
+    x.fillText(k, W/2, 224);
+    x.fillStyle = t.dim; x.font = '11px sans-serif';
+    x.fillText(vs.length + ' 个可显示异体', W/2, 276);
+    x.textBaseline = 'middle';
+    var startY = headerH + 40, gx = (W-80-(cols*cell))/2 + 40;
+    vs.forEach(function(c,i){
+      var r = Math.floor(i/cols), cc = i%cols;
+      var px = gx + cc*cell + cell/2, py = startY + r*cell + cell/2 - 6;
+      x.fillStyle = t.box;
+      x.fillRect(px-cell/2+5, py-cell/2+5, cell-10, cell-10);
+      x.strokeStyle = t.line; x.strokeRect(px-cell/2+5.5, py-cell/2+5.5, cell-11, cell-11);
+      x.fillStyle = t.ink; x.font = '46px ' + CFONT;
+      x.fillText(c, px, py);
+    });
+    x.fillStyle = t.dim; x.font = '10.5px sans-serif';
+    x.fillText('《異體字字典》〈異體字表〉· 《说文解字》重文 · Unicode Unihan', W/2, H-66);
+    var a = document.createElement('a');
+    a.download = '字的分身_' + k + '.png';
+    a.href = cv.toDataURL('image/png');
+    a.click();
+    hint.textContent = '已存为 PNG';
   }
-  return m;
-}
-function currentMark(pos){
-  const d=PROOF.dec[pos];
-  return d==="s" ? (PROOF.sm[pos]||"") : (PROOF.om[pos]||"");
-}
-function buildChosen(){
-  const c=PROOF.chars; let out="";
-  for(let i=0;i<c.length;i++){ out+=c[i]; if(i+1<c.length) out+=currentMark(i+1); }
-  out+=currentMark(c.length);
-  return out;
-}
-function renderProof(){
-  const {om,sm,diffs,dec,base}=PROOF;
-  const out=document.getElementById("sdout"), bar=document.getElementById("sdproofbar");
-  const diffSet=new Set(diffs.map(function(d){return d.p;}));
-  const emitted=new Set();
-  const r=buildSegments(base, document.getElementById("sdone").checked);
-  let html="", n=0;
-  function diffLabel(pos){
-    if(!diffSet.has(pos) || emitted.has(pos)) return "";
-    emitted.add(pos);
-    const on=dec[pos]==="s";
-    const mk=on?(sm[pos]||""):(om[pos]||"");
-    return `<label class="pd-inline${on?" on":""}${mk?"":" pd-add"}"><input type="checkbox" data-p="${pos}" ${on?"checked":""}><span>${mk||"·"}</span></label>`;
+
+
+  /* ---------- 索引 ---------- */
+  var IDXMAP = null, CH2IDX = null;
+  function buildIndexMap(){
+    if (IDXMAP) return;
+    IDXMAP = new Array(GN);
+    CH2IDX = {};
+    for (var ch in CH){
+      var rec = CH[ch];
+      if (rec.v && rec.v.length && rec.v[0].length > 4 && rec.v[0][4] != null) CH2IDX[ch] = rec.v[0][4];
+      for (var i=0;i<rec.v.length;i++){
+        var e = rec.v[i];
+        if (e.length > 4 && e[4] != null){
+          IDXMAP[e[4]] = [ch, e[1]];
+          if (CH2IDX[e[0]] == null) CH2IDX[e[0]] = e[4];
+        }
+      }
+    }
   }
-  r.segs.forEach(function(sg){
-    if(sg.hit){
-      html+=`<span class="tk" title="${escAttr(sg.def)}">${escHtml(sg.text)}</span>`;
-      n+=sg.text.length;
-      html+=diffLabel(n);
+
+  function hidePanels(except){
+    var pb = document.getElementById('parts');
+    if (pb && except !== 'parts') pb.hidden = true;
+  }
+
+  /* ---------- 康熙释义 ---------- */
+  var KX = null, kxLoading = false;
+  function initKX(){
+    if (KX || kxLoading) return;
+    if (DATA.KX && typeof DATA.KX === 'object'){ KX = DATA.KX; return; }
+    if (!DATA.KX || !window.DecompressionStream) return;
+    kxLoading = true;
+    var s = atob(DATA.KX), u = new Uint8Array(s.length);
+    for (var i=0;i<s.length;i++) u[i] = s.charCodeAt(i);
+    var ds = new DecompressionStream('gzip');
+    new Response(new Blob([u]).stream().pipeThrough(ds)).arrayBuffer().then(function(buf){
+      KX = JSON.parse(new TextDecoder().decode(buf));
+      kxLoading = false;
+      if (path.length) render(path[path.length-1]);
+    }).catch(function(){ kxLoading = false; });
+  }
+
+  /* ---------- 部件点选查字 ---------- */
+  var IDSD = null;
+  function initIDS(cb){
+    if (IDSD){ cb && cb(); return; }
+    if (DATA.IDS && typeof DATA.IDS === 'object' && DATA.IDS.s){ IDSD = DATA.IDS; cb && cb(); return; }
+    if (!DATA.IDS || !window.DecompressionStream){ cb && cb(); return; }
+    var str = atob(DATA.IDS), u = new Uint8Array(str.length);
+    for (var i=0;i<str.length;i++) u[i] = str.charCodeAt(i);
+    var ds = new DecompressionStream('gzip');
+    new Response(new Blob([u]).stream().pipeThrough(ds)).arrayBuffer().then(function(buf){
+      IDSD = JSON.parse(new TextDecoder().decode(buf));
+      if (IDSD && !IDSD.s) IDSD = { s: IDSD, i: {} };
+      cb && cb();
+    }).catch(function(){ IDSD = null; cb && cb(); });
+  }
+
+  function searchParts(q){
+    if (!IDSD) return null;
+    var raw = Array.from(q).filter(function(c){ return /[\u3400-\u4DBF\u4E00-\u9FFF\u{20000}-\u{3FFFF}]/u.test(c); });
+    if (!raw.length) return { full: [], part: [] };
+    var ps = [];
+    raw.forEach(function(c){ if (ps.indexOf(c) < 0) ps.push(c); });
+    var groups = ps.map(function(c){
+      var g = [c];
+      var add = function(x){ if (x && g.indexOf(x) < 0) g.push(x); };
+      var a = S2T[c], b = (DATA.t2s || {})[c];
+      if (a) Array.from(a).forEach(add);
+      if (b) Array.from(b).forEach(add);
+      return g;
+    });
+    var N = groups.length, maxComps = N + 5;
+    var full = [], part = [];
+    for (var ch in IDSD.s){
+      var st = IDSD.s[ch], k = 0;
+      for (var i=0;i<N;i++){
+        for (var j=0;j<groups[i].length;j++){
+          if (st.indexOf(groups[i][j]) >= 0){ k++; break; }
+        }
+      }
+      if (k === N) full.push([ch, st.length, k, N]);
+      else if (k === N - 1 && N > 1 && st.length <= maxComps) part.push([ch, st.length, k, N]);
+    }
+    full.sort(function(a,b){ return a[1] - b[1]; });
+    part.sort(function(a,b){ return a[1] - b[1]; });
+    return { full: full, part: part };
+  }
+
+  var RAD_ALL = '一丨丶丿乙亅二亠人儿入八冂冖冫几凵刀力勹匕匚匸十卜卩厂厶又口囗土士夂夊夕大女子宀寸小尢尸屮山巛工己巾干幺广廴廾弋弓彐彡彳心戈戶手支攴文斗斤方无日曰月木欠止歹殳毋比毛氏气水火爪父爻爿片牙牛犬玄玉瓜瓦甘生用田疋疒癶白皮皿目矛矢石示禸禾穴立竹米糸缶网羊羽老而耒耳聿肉臣自至臼舌舛舟艮色艸虍虫血行衣襾見角言谷豆豕豸貝赤走足身車辛辰辵邑酉釆里金長門阜隶隹雨青非面革韋韭音頁風飛食首香馬骨高髟鬥鬯鬲鬼魚鳥鹵鹿麥麻黃黍黑黹黽鼎鼓鼠鼻齊齒龍龜龠';
+  var RAD_HOT = '一丨丶丿乙二亠人儿入八冂冖几刀力十卜厂又亻口囗土士夕大女子宀寸小尸山工巾广弓彐彡彳阝氵扌忄心戈手攴文斤方日曰月木欠止比毛水爪片牙牛犬艹灬玉瓜甘生用田疋白皮皿目矢石示禾穴立竹米糸网羊耳肉臣自至臼舌舟艮艸虍虫血行衣見角言谷豆貝赤走足身車辛辰里金長門隹雨青非面革音頁風食馬高鬼魚鳥鹿麻黃黑鼓鼻齊齒龍龜';
+
+  var picked = [], padMode = 'hot';
+  var padBox, padTitle, padToggle, pickedBox, pinEl, pstatEl, presEl;
+
+  function makePad(str, box){
+    box.innerHTML = Array.from(str).map(function(c){
+      return '<button class="pb" data-p="'+esc(c)+'">'+esc(c)+'</button>';
+    }).join('');
+  }
+
+  function refreshPicked(){
+    if (!picked.length){
+      pickedBox.innerHTML = '<span class="pempty">点下方部件开始组合 · 可多选</span>';
+    } else {
+      pickedBox.innerHTML = picked.map(function(c){
+        return '<span class="pk-chip" data-rm="'+esc(c)+'">'+esc(c)+'<i>×</i></span>';
+      }).join('');
+    }
+    if (padBox) padBox.querySelectorAll('.pb').forEach(function(b){
+      b.classList.toggle('on', picked.indexOf(b.getAttribute('data-p')) >= 0);
+    });
+  }
+
+  function cellOf(row, partial){
+    var ch = row[0], k = row[2], n = row[3];
+    var rec = CH[ch];
+    var simp = (rec && rec.tr) || S2T[ch] || '';
+    var badge = n > 1
+      ? '<span class="pk' + (partial ? ' part' : '') + '">' + k + '/' + n + '</span>'
+      : (rec ? '<span class="rp">' + rec.v.length + ' 异体</span>' : '');
+    return '<div class="rg' + (partial ? ' loose' : '') + '" data-ch="'+esc(ch)+'">'
+      + '<span class="rc" style="font-size:26px;line-height:1.1">'+esc(ch)+'</span>'
+      + (simp && simp !== ch ? '<span class="rp">'+esc(simp)+'</span>' : '')
+      + badge + '</div>';
+  }
+
+  function runSearch(){
+    if (!picked.length){ pstatEl.textContent = ''; presEl.innerHTML = ''; return; }
+    initIDS(function(){
+      if (!IDSD){ pstatEl.textContent = '部件数据未能载入'; return; }
+      var t0 = Date.now();
+      var hits = searchParts(picked.join(''));
+      var ms = Date.now() - t0;
+      if (!hits){ pstatEl.textContent = '部件数据未就绪'; return; }
+      if (!hits.full.length && !hits.part.length){
+        pstatEl.textContent = '没有同时包含这些部件的字';
+        presEl.innerHTML = '';
+        return;
+      }
+      var out = '';
+      var fList = hits.full.slice(0, 60);
+      if (fList.length){
+        out += '<div class="pgroup">全中 ' + hits.full.length + ' 字</div>';
+        out += fList.map(function(r){ return cellOf(r, false); }).join('');
+      }
+      var pList = hits.part.slice(0, 24);
+      if (pList.length){
+        out += '<div class="pgroup part-h">缺一个部件 ' + hits.part.length + ' 字</div>';
+        out += pList.map(function(r){ return cellOf(r, true); }).join('');
+      }
+      presEl.innerHTML = out;
+      pstatEl.textContent = '全中 ' + hits.full.length + ' · 缺部件 ' + hits.part.length + ' · ' + ms + ' ms';
+    });
+  }
+
+  function togglePart(c){
+    var i = picked.indexOf(c);
+    if (i >= 0) picked.splice(i, 1); else picked.push(c);
+    refreshPicked();
+    runSearch();
+  }
+
+  function setupParts(){
+    if (!document.getElementById('parts-btn')) return;
+    padBox = document.getElementById('pad');
+    padTitle = document.getElementById('padTitle');
+    padToggle = document.getElementById('padToggle');
+    pickedBox = document.getElementById('picked');
+    pinEl = document.getElementById('pin');
+    pstatEl = document.getElementById('pstat');
+    presEl = document.getElementById('pres');
+    var partsBox = document.getElementById('parts');
+
+    makePad(RAD_HOT, padBox);
+    refreshPicked();
+
+    document.getElementById('parts-btn').addEventListener('click', function(){
+      var show = partsBox.hidden;
+      hidePanels('parts');
+      partsBox.hidden = !show;
+      if (show){
+        initIDS(function(){ showDecomp(path.length ? path[path.length-1] : ''); });
+        showDecomp(path.length ? path[path.length-1] : '');
+      }
+    });
+
+    padToggle.addEventListener('click', function(){
+      padMode = (padMode === 'hot') ? 'all' : 'hot';
+      makePad(padMode === 'hot' ? RAD_HOT : RAD_ALL, padBox);
+      padTitle.textContent = padMode === 'hot' ? '常用部件' : '全部 214 部首';
+      padToggle.textContent = padMode === 'hot' ? '全部 214 部首' : '只看常用';
+      refreshPicked();
+    });
+
+    partsBox.addEventListener('click', function(e){
+      var rm = e.target.closest('[data-rm]');
+      if (rm){ togglePart(rm.getAttribute('data-rm')); return; }
+      var dc = e.target.closest('.decomp [data-p]');
+      if (dc){ togglePart(dc.getAttribute('data-p')); return; }
+      var pb = e.target.closest('.pb');
+      if (pb){ togglePart(pb.getAttribute('data-p')); return; }
+    });
+
+    document.getElementById('pclear').addEventListener('click', function(){
+      picked = [];
+      refreshPicked();
+      runSearch();
+    });
+
+    function showDecomp(ch){
+      var box = document.getElementById('decomp');
+      if (!ch || ch.length !== 1){ box.hidden = true; box.innerHTML = ''; return; }
+      if (!IDSD){
+        box.hidden = false;
+        box.innerHTML = '<span class="dlb">构形数据载入中…</span>';
+        initIDS();
+        var tries = 0;
+        var timer = setInterval(function(){
+          if (IDSD || ++tries > 25){
+            clearInterval(timer);
+            showDecomp(ch);
+          }
+        }, 200);
+        return;
+      }
+      if (!IDSD.i || !IDSD.i[ch]){ box.hidden = true; box.innerHTML = ''; return; }
+      var ids = IDSD.i[ch];
+      var OPS = '⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻〾';
+      var tokens = Array.from(ids);
+      var body = tokens.map(function(c){
+        if (OPS.indexOf(c) >= 0) return '<span class="dop">'+c+'</span>';
+        return '<span class="dc" data-p="'+esc(c)+'">'+esc(c)+'</span>';
+      }).join('');
+      box.innerHTML = '<span class="dlb">拆解</span><span class="dz">'+esc(ch)+'</span>'
+        + '<span style="color:var(--dim);margin:0 4px">=</span>' + body
+        + '<div style="font-size:10px;color:var(--dim);letter-spacing:.5px;margin-top:2px">点任一构件加入查询</div>';
+      box.hidden = false;
+    }
+
+    pinEl.addEventListener('input', function(){
+      var v = pinEl.value.trim();
+      if (v.length === 1) showDecomp(v);
+      else if (!v) document.getElementById('decomp').hidden = true;
+    });
+
+    pinEl.addEventListener('keydown', function(e){
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      Array.from(pinEl.value).forEach(function(c){
+        if (/[\u3400-\u9FFF]/.test(c) && picked.indexOf(c) < 0) picked.push(c);
+      });
+      pinEl.value = '';
+      refreshPicked();
+      runSearch();
+    });
+
+    window.__showDecomp = showDecomp;
+
+    presEl.addEventListener('click', function(e){
+      var t = e.target.closest('[data-ch]');
+      if (t && t.getAttribute('data-ch')) go(t.getAttribute('data-ch'));
+    });
+  }
+
+  /* 启动 */
+  initGlyphPack();
+  setupParts();
+  var _h = '';
+  try { _h = decodeURIComponent(location.hash.slice(1)); } catch(e){}
+  if (_h && _h.length === 1 && (CH[_h] || S2T[_h] || T2S[_h])){ input.value = _h; go(_h); }
+  else {
+    card.innerHTML = '<div class="card"><div class="empty" style="padding:64px 10px 70px">'
+      + '<div style="font-size:23px;letter-spacing:10px;color:var(--dim);text-indent:10px">输 入 汉 字</div>'
+      + '<div style="font-size:11.5px;margin-top:16px;letter-spacing:1.5px">看它历代的写法</div>'
+      + '</div></div>';
+  }
+  }  /* end boot */
+
+  function fatal(msg){
+    var c = document.getElementById('card');
+    if (c) c.innerHTML = '<div class="card"><div class="empty">' + msg + '</div></div>';
+    var jc = document.getElementById('jscheck');
+    if (jc) jc.parentNode.removeChild(jc);
+  }
+
+  function start(){
+    if (!window.__DATA_B64){
+      fatal('数据文件未加载<br><span style="font-size:11px">请确认 data.js 与本页在同一目录</span>');
       return;
     }
-    for(const ch of sg.text){
-      if(isP(ch) && ch.replace(/\s/g,"")){
-        const d=diffLabel(n);
-        html+= d || escHtml(ch);
-      }else{
-        html+=escHtml(ch); n++;
-        html+=diffLabel(n);
-      }
+    if (!window.DecompressionStream){
+      fatal('浏览器版本过低，无法解压数据<br><span style="font-size:11px">请升级 Chrome / Edge / Safari</span>');
+      return;
     }
-  });
-  html+=diffLabel(n);
-  out.innerHTML=html;
-
-  const accepted=diffs.filter(function(d){ return dec[d.p]==="s"; }).length;
-  bar.innerHTML=`<span class="pd-sum">建议 ${diffs.length} · 已采纳 ${accepted}</span>
-    <button class="pd-mini" data-act="all-s">全采纳</button>
-    <button class="pd-mini" data-act="all-o">全不采纳</button>
-    <button class="pd-mini primary" data-act="apply">应用</button>
-    <button class="pd-mini" data-act="exit">取消</button>`;
-}
-
-let UNDO=[];
-function pushUndo(t){ UNDO.push(t); if(UNDO.length>20) UNDO.shift(); }
-
-function proofread(){
-  const raw=(document.getElementById("sdin").value||"").replace(/\r/g,"");
-  if(!raw.trim()){
-    document.getElementById("sdout").innerHTML="";
-    var st2=document.getElementById("sdstat"); if(st2) st2.textContent="请先粘贴已加标点的文本。";
-    PROOF=null; return;
-  }
-  const base=raw;
-  const chars=stripPunct(base);
-  const sug=punctuate(base);
-  LASTSUG=sug;
-  const om=markMap(base), sm=markMap(sug);
-  const longs=[];
-  (function(){
-    let start=0;
-    for(let i=0;i<=base.length;i++){
-      if(i===base.length || /[，。：；、！？]/.test(base[i])){
-        const piece=base.slice(start,i).replace(/\s/g,"");
-        if(piece.length>=20) longs.push({head:piece.slice(0,8),tail:piece.slice(-8),len:piece.length});
-        start=i+1;
-      }
+    try {
+      var str = atob(window.__DATA_B64), u = new Uint8Array(str.length);
+      for (var i=0;i<str.length;i++) u[i] = str.charCodeAt(i);
+      var ds = new DecompressionStream('gzip');
+      new Response(new Blob([u]).stream().pipeThrough(ds)).arrayBuffer().then(function(buf){
+        boot(JSON.parse(new TextDecoder().decode(buf)));
+      }).catch(function(e){
+        fatal('数据解压失败：' + e.message);
+      });
+    } catch(e){
+      fatal('数据读取失败：' + e.message);
     }
-  })();
-  const keys=[...new Set([...Object.keys(om),...Object.keys(sm)].map(Number))].sort(function(a,b){return a-b;});
-  const diffs=keys.filter(function(p){ return (sm[p]||"") && (sm[p]||"")!==(om[p]||""); })
-                 .map(function(p){ return {p:p,o:om[p]||"",s:sm[p]||""}; });
-  const dec={}; diffs.forEach(function(d){ dec[d.p]="o"; });
-  PROOF={chars:chars,om:om,sm:sm,diffs:diffs,dec:dec,longs:longs,base:base};
-  renderProof();
-  LAST=null;
-}
-
-/* 套语释义：点击/点按显示浮层（移动端无悬停） */
-const tipEl=document.createElement("div");
-tipEl.className="tip"; tipEl.id="tip";
-document.body.appendChild(tipEl);
-function showTip(el,text){
-  tipEl.textContent=text;
-  tipEl.classList.add("show");
-  const r=el.getBoundingClientRect();
-  const tw=tipEl.offsetWidth, th=tipEl.offsetHeight;
-  let left=r.left+r.width/2-tw/2;
-  left=Math.max(8,Math.min(left,window.innerWidth-tw-8));
-  let top=r.top-th-8;
-  if(top<8) top=r.bottom+8;
-  tipEl.style.left=left+"px"; tipEl.style.top=top+"px";
-  el.classList.add("hit"); setTimeout(()=>el.classList.remove("hit"),700);
-}
-function hideTip(){ tipEl.classList.remove("show"); }
-document.addEventListener("click",function(e){
-  const tk=e.target.closest(".tk");
-  if(tk){
-    const t=tk.getAttribute("title")||tk.getAttribute("data-tip");
-    if(t) showTip(tk,t);
-    return;
   }
-  hideTip();
-});
-window.addEventListener("scroll",hideTip,{passive:true});
-window.addEventListener("resize",hideTip);
+  start();
+})();
 </script>
 </body>
 </html>
