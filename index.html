@@ -228,6 +228,7 @@ header .stat{margin-top:8px;font-size:11px;color:var(--dim);letter-spacing:.5px}
 
 footer{margin-top:34px;text-align:center;font-size:10.5px;color:var(--dim);line-height:2;letter-spacing:.3px}
 footer a{color:var(--mut);text-decoration:none;border-bottom:1px dotted var(--line)}
+footer b{color:var(--ink);font-weight:600}
 
 @media(max-width:600px){
   body{padding:40px 15px 60px}
@@ -300,7 +301,7 @@ footer a{color:var(--mut);text-decoration:none;border-bottom:1px dotted var(--li
   <footer>
     数据来源：《異體字字典》〈異體字表〉（2024・正式七版，76,191 字）<br>
     《说文解字》重文 · Unicode Unihan 数据库 · 供学习研究之用<br>
-    本页为离线单文件，不联网、不追踪
+    本页被看过 <b><span id="busuanzi_value_page_pv">…</span></b> 次 · <b><span id="busuanzi_value_site_uv">…</span></b> 位访客
   </footer>
 </div>
 
@@ -1058,6 +1059,15 @@ if (!window.YTZ_GLYPHS) document.write('<script src="glyphs.js" defer><\/script>
   }
   start();
 })();
+</script>
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script>
+setTimeout(function(){
+  ['busuanzi_value_page_pv','busuanzi_value_site_uv'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el && (el.textContent.trim()==='…' || el.textContent.trim()==='')) el.textContent='—';
+  });
+},6000);
 </script>
 </body>
 </html>
