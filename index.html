@@ -926,13 +926,37 @@ if (!window.YTZ_GLYPHS) document.write('<script src="glyphs.js" defer><\/script>
     makePad(RAD_HOT, padBox);
     refreshPicked();
 
+    function resetParts(){
+      window.__decompVer = (window.__decompVer || 0) + 1;
+      picked = [];
+      refreshPicked();
+      if (pinEl) pinEl.value = '';
+      var db = document.getElementById('decomp');
+      if (db){ db.hidden = true; db.innerHTML = ''; }
+      if (pstatEl) pstatEl.textContent = '';
+      if (presEl) presEl.innerHTML = '';
+      var qEl = document.getElementById('q');
+      if (qEl) qEl.value = '';
+      var cd = document.getElementById('card');
+      if (cd) cd.innerHTML = '<div class="card"><div class="empty" style="padding:64px 10px 70px">'+
+        '<div style="font-size:23px;letter-spacing:10px;color:var(--dim);text-indent:10px">输 入 汉 字</div>'+
+        '<div style="font-size:11.5px;margin-top:16px;letter-spacing:1.5px">看它历代的写法</div>'+
+        '</div></div>';
+      window.__partsPickedChar = false;
+    }
+
     document.getElementById('parts-btn').addEventListener('click', function(){
+      var qEl = document.getElementById('q');
+      if (qEl && qEl.value) qEl.value = '';
       var show = partsBox.hidden;
       hidePanels('parts');
       partsBox.hidden = !show;
       if (show){
-        initIDS(function(){ showDecomp(path.length ? path[path.length-1] : ''); });
-        showDecomp(path.length ? path[path.length-1] : '');
+        if (window.__partsPickedChar){ resetParts(); }
+        else {
+          initIDS(function(){ showDecomp(path.length ? path[path.length-1] : ''); });
+          showDecomp(path.length ? path[path.length-1] : '');
+        }
       }
     });
 
@@ -954,8 +978,7 @@ if (!window.YTZ_GLYPHS) document.write('<script src="glyphs.js" defer><\/script>
     });
 
     document.getElementById('pclear').addEventListener('click', function(){
-      picked = [];
-      refreshPicked();
+      resetParts();
       runSearch();
     });
 
@@ -967,10 +990,12 @@ if (!window.YTZ_GLYPHS) document.write('<script src="glyphs.js" defer><\/script>
         box.innerHTML = '<span class="dlb">构形数据载入中…</span>';
         initIDS();
         var tries = 0;
+        var ver = window.__decompVer || 0;
         var timer = setInterval(function(){
+          if (ver !== window.__decompVer){ clearInterval(timer); return; }
           if (IDSD || ++tries > 25){
             clearInterval(timer);
-            showDecomp(ch);
+            if (ver === window.__decompVer) showDecomp(ch);
           }
         }, 200);
         return;
@@ -1010,7 +1035,11 @@ if (!window.YTZ_GLYPHS) document.write('<script src="glyphs.js" defer><\/script>
 
     presEl.addEventListener('click', function(e){
       var t = e.target.closest('[data-ch]');
-      if (t && t.getAttribute('data-ch')) go(t.getAttribute('data-ch'));
+      if (t && t.getAttribute('data-ch')) {
+        if (pinEl) pinEl.value = '';
+        window.__partsPickedChar = true;
+        go(t.getAttribute('data-ch'));
+      }
     });
   }
 
